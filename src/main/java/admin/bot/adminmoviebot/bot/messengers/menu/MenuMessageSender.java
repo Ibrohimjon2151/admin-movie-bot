@@ -1,0 +1,46 @@
+package admin.bot.adminmoviebot.bot.messengers.menu;
+
+import admin.bot.adminmoviebot.bot.constants.BotState;
+import admin.bot.adminmoviebot.bot.constants.Messages;
+import admin.bot.adminmoviebot.bot.messengers.util.TaskUtil;
+import admin.bot.adminmoviebot.dbConfig.entity.userBot.User;
+import admin.bot.adminmoviebot.dbConfig.payload.UserDto;
+import admin.bot.adminmoviebot.dbConfig.service.UserService;
+import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+
+import static admin.bot.adminmoviebot.bot.constants.Buttons.*;
+
+@Service
+public final class MenuMessageSender implements MenuMessageSenderInt {
+
+  private final UserService userService;
+
+  public MenuMessageSender(UserService userService) {
+    this.userService = userService;
+  }
+
+  @Override
+  public SendMessage sendMenu(Update update) {
+    SendMessage sendMessage = new SendMessage();
+    sendMessage.setText(Messages.MSG_MENU);
+    Long chatId = TaskUtil.getChatId(update);
+    boolean isExist = userService.isExistsByChatId(chatId);
+    if (!isExist){
+      UserDto user = new UserDto();
+      user.setChatId(chatId);
+      user.setLang(0);
+      user.setBotState(BotState.ST_MENU);
+      userService.saveUser(user);
+    }
+    sendMessage.setChatId(TaskUtil.getChatIdStr(update));
+
+    String[] menus = {BTN_ANALYSE, BTN_SEND_MSG_USERS, BTN_ADD_NEW_MOVIE};
+    ReplyKeyboardMarkup keyboardMarkup = TaskUtil.createTwoColumnKeyboard(menus);
+    sendMessage.setReplyMarkup(keyboardMarkup);
+
+    return sendMessage;
+  }
+}
