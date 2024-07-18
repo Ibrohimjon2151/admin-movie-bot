@@ -13,8 +13,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import static admin.bot.adminmoviebot.bot.constants.BotState.ST_ENTER_MOVIE_NAME;
-import static admin.bot.adminmoviebot.bot.constants.BotState.ST_MOVIE_CODE;
+import static admin.bot.adminmoviebot.bot.constants.BotState.*;
 import static admin.bot.adminmoviebot.bot.constants.Messages.MSG_START;
 
 @Component
@@ -45,6 +44,7 @@ public class MainAdminComponent extends TelegramLongPollingBot {
       message = update.getMessage().getText();
       if (message.equals(MSG_START)) {
         execute(menuMessageSender.sendMenu(update));
+        userService.changeUsersStateByChatId(update,ST_MENU);
       } else {
         switch (userState) {
           case ST_START -> {
@@ -64,6 +64,11 @@ public class MainAdminComponent extends TelegramLongPollingBot {
               }
             }
           }
+          case ST_ENTER_MOVIE_NAME -> {
+            execute(menuMessageSender.deleteMessage(update));
+            execute(newMovieMsgSender.saveNameChooseCategory(update));
+            userService.changeUsersStateByChatId(update,ST_CHOOSE_LANGUAGE);
+          }
         }
       }
     } else if (update.hasCallbackQuery()) {
@@ -72,6 +77,19 @@ public class MainAdminComponent extends TelegramLongPollingBot {
         case ST_MOVIE_CODE -> {
           userService.changeUsersStateByChatId(update,ST_ENTER_MOVIE_NAME);
           execute(newMovieMsgSender.copyCodeSendName(update));
+        }
+        case ST_CHOOSE_LANGUAGE -> {
+          userService.changeUsersStateByChatId(update,ST_MOVIE_QUALITY);
+          execute(newMovieMsgSender.saveCategoryChooseLang(update));
+        }
+        case ST_MOVIE_QUALITY -> {
+          userService.changeUsersStateByChatId(update,ST_MOVIE_SIZE);
+          execute(newMovieMsgSender.saveLangChooseQuality(update));
+        }
+        case ST_MOVIE_SIZE->{
+          userService.changeUsersStateByChatId(update,ST_MOVIE_LENGTH);
+          execute(menuMessageSender.deleteMessage(update));
+          execute(newMovieMsgSender.saveQualitySendRunTime(update));
         }
       }
     }

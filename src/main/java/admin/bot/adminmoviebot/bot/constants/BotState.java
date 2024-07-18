@@ -2,5 +2,10 @@ package admin.bot.adminmoviebot.bot.constants;
 
 public enum BotState {
   ST_START,
-  ST_MOVIE_CODE, ST_ENTER_MOVIE_NAME, ST_MENU
+  ST_MOVIE_CODE,
+  ST_ENTER_MOVIE_NAME,
+  ST_CHOOSE_LANGUAGE,
+  ST_MOVIE_QUALITY,
+  ST_MOVIE_SIZE,
+  ST_MOVIE_LENGTH, ST_MENU
 }

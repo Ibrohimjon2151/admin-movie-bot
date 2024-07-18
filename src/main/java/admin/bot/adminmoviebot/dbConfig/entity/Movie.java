@@ -13,22 +13,22 @@ import lombok.*;
 @AllArgsConstructor
 public class Movie extends AbstractEntity {
 
-  @Column(nullable = false)
   private String name;
 
   @Column(nullable = false)
   private String movieCode;
 
-  private float size;
 
   @ManyToOne
   private Category category;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "language_code", nullable = false)
+  @Column(name = "language_code")
   private Language language;
 
   private int quality;
 
+  private String runTime;
 
+  private String size;
 }

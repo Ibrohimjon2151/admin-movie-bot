@@ -11,4 +11,7 @@ public interface Buttons {
   String BTN_SEND_MSG_USERS = "Bot userlarga habar jo'natish \uD83D\uDCAC";
   String BTN_ADD_NEW_MOVIE = "Yangi kino qo'shish ➕";
   String BTN_COPY_CODE = "Copy ©\uFE0F";
+
+  String [] BTN_QUALITIES = {"144","240","360","480","720","1080"};
+
 }

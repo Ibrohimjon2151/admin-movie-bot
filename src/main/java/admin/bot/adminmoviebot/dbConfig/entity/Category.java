@@ -12,4 +12,6 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = true)
 public class Category extends AbstractEntity {
 
+  private String name;
+
 }
