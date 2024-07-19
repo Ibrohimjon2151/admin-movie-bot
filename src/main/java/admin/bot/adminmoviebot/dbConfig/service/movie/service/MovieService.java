@@ -1,4 +1,4 @@
-package admin.bot.adminmoviebot.dbConfig.service;
+package admin.bot.adminmoviebot.dbConfig.service.movie.service;
 
 import admin.bot.adminmoviebot.bot.constants.Language;
 import admin.bot.adminmoviebot.dbConfig.entity.Category;
@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.Random;
 
 @Service
-public class MovieService {
+public final class MovieService implements MovieServiceInt {
   private final MovieRepository movieRepository;
   private final CategoryRepository categoryRepository;
 
@@ -20,6 +20,7 @@ public class MovieService {
     this.categoryRepository = categoryRepository;
   }
 
+  @Override
   public String generateUniqueCode() {
     Random random = new Random();
     String code;
@@ -31,45 +32,67 @@ public class MovieService {
     return code;
   }
 
-
-  //SAVE MOVIE'S MOVIE CODE
+  @Override
   public void saveMovieCode(String code) {
     Movie movie = new Movie();
     movie.setMovieCode(code);
     movieRepository.save(movie);
   }
 
-  //SAVE MOVIE'S NAME BY MOVIE CODE
+  @Override
   public void saveMovieName(String movieCode, String name) {
-    Optional<Movie> optionalMovie = movieRepository.findByMovieCode(movieCode);
-    Movie movie = optionalMovie.get();
+    Movie movie = getMovie(movieCode);
     movie.setName(name);
     movieRepository.save(movie);
   }
 
-  //SAVE MOVIE'S NAME BY MOVIE CODE
+  @Override
   public void saveMovieCategoryId(String movieCode, String categoryId) {
-    Optional<Movie> optionalMovie = movieRepository.findByMovieCode(movieCode);
-    Movie movie = optionalMovie.get();
+    Movie movie = getMovie(movieCode);
     long id = Long.parseLong(categoryId);
     Optional<Category> optionalCategory = categoryRepository.findById(id);
     movie.setCategory(optionalCategory.get());
     movieRepository.save(movie);
   }
 
-  //SAVE MOVIE LANG
+  @Override
   public void saveMovieLanguage(String movieCode, String lang) {
-    Optional<Movie> optionalMovie = movieRepository.findByMovieCode(movieCode);
-    Movie movie = optionalMovie.get();
-    movie.setLanguage(Language.valueOf(lang));
+    Movie movie = getMovie(movieCode);
+    movie.setLanguage(Integer.parseInt(lang));
     movieRepository.save(movie);
   }
 
-  //SAVE MOVIE QUALITY
+  @Override
   public void saveMovieQuality(String movieCode, String data) {
-    Optional<Movie> optionalMovie = movieRepository.findByMovieCode(movieCode);
-    Movie movie = optionalMovie.get();
+    Movie movie = getMovie(movieCode);
     movie.setQuality(Integer.parseInt(data));
     movieRepository.save(movie);
+  }
+
+  @Override
+  public void saveMovieSize(String movieCode, String text) {
+    Movie movie = getMovie(movieCode);
+    movie.setSize(text);
+    movieRepository.save(movie);
+  }
+
+  @Override
+  public void saveMovieRunTime(String movieCode, String text) {
+    Movie movie = getMovie(movieCode);
+    movie.setRunTime(text);
+    movieRepository.save(movie);
+  }
+
+  @Override
+  public void saveMovieYear(String movieCode, String text) {
+    Movie movie = getMovie(movieCode);
+    movie.setProductionYear(text);
+    movieRepository.save(movie);
+  }
+
+  @Override
+  public Movie getMovie(String movieCode) {
+    Optional<Movie> optionalMovie = movieRepository.findByMovieCode(movieCode);
+    return optionalMovie.orElseThrow(() -> new RuntimeException("Movie not found"));
   }
 }

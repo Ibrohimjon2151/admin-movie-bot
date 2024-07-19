@@ -22,13 +22,13 @@ public class Movie extends AbstractEntity {
   @ManyToOne
   private Category category;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "language_code")
-  private Language language;
+  private int language;
 
   private int quality;
 
   private String runTime;
 
   private String size;
+
+  private String productionYear;
 }

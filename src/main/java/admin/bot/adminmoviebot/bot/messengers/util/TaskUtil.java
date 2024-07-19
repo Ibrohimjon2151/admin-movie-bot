@@ -62,6 +62,7 @@ public class TaskUtil {
   // SIMPLE TEXT MESSAGE SENDER
   public static SendMessage messageSender(Update update, String message) {
     SendMessage sendMessage = new SendMessage();
+    sendMessage.enableHtml(true);
     sendMessage.setChatId(String.valueOf(getChatId(update)));
     sendMessage.setText(message);
     return sendMessage;

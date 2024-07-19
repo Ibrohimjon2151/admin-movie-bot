@@ -25,7 +25,7 @@ public class UserService {
 
   //SAVE USER FIRST TIME CLICK START BUTTON
   public void saveUser(UserDto userDto) {
-    User user = new User(userDto.getChatId(), userDto.getBotState(), userDto.getLang(), userDto.getFullName(), userDto.getUserName());
+    User user = new User(userDto.getChatId(), userDto.getBotState(),null, userDto.getLang(), userDto.getFullName(), userDto.getUserName());
     userRepository.save(user);
   }
 
@@ -44,6 +44,7 @@ public class UserService {
     }
     Optional<User> optionalUser = userRepository.findByChatId(chatId);
     User user = optionalUser.get();
+    user.setPreviousState(user.getBotState());
     user.setBotState(newState);
     userRepository.save(user);
   }

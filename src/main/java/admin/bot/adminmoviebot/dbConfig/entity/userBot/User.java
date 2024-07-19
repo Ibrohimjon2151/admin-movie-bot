@@ -25,6 +25,9 @@ public class User extends AbstractEntity {
  @Column(name = "bot_state", nullable = false)
  private BotState botState;
 
+ @Enumerated(EnumType.STRING)
+ private BotState previousState;
+
  @Column(name = "lang", nullable = false)
  private int lang;
 

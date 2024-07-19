@@ -11,7 +11,7 @@ import java.io.Serializable;
 public sealed interface NewMovieMsgSenderInt permits NewMovieMsgSender{
   SendMessage sendGeneratedMovieId(Update update);
 
-  EditMessageText copyCodeSendName(Update update);
+  SendMessage copyCodeSendName(Update update);
 
   SendMessage saveNameChooseCategory(Update update);
 
@@ -20,4 +20,14 @@ public sealed interface NewMovieMsgSenderInt permits NewMovieMsgSender{
   EditMessageText saveLangChooseQuality(Update update);
 
   SendMessage saveQualitySendRunTime(Update update);
+
+  SendMessage saveMovieRunTimeSendSize(Update update);
+
+  SendMessage saveSizeSendProductionYear(Update update);
+
+  SendMessage saveMovieYearSendConfirmation(Update update);
+
+  EditMessageText sendEditParameters(Update update);
+
+  SendMessage editExactParameter(Update update);
 }

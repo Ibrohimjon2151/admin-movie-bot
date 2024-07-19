@@ -10,5 +10,14 @@ public interface Messages {
   String MSG_CHOOSE_MOVIE_CATEGORY = "Kino janrini tanlang";
   String MSG_CHOOSE_LANG = "Kino tilini tanlang";
   String MSG_CHOOSE_QUALITY = "Kino sifatini tanlang";
-  String MSG_ASK_ENTER_LENGTH_MOVIE = "Kino uzunligini kiriting";
+  String MSG_ENTER_LENGTH_MOVIE = "Kino davomiyligik vaqtini kiriting";
+  String MSG_ENTER_SIZE = "Kino hajmini kiriting";
+  String MSG_ENTER_PRODUCTION_YEAR = "Kino yilini kiriting M.u:<i>2015</i>";
+  String MSG_CONFIRM_DETAILS_MOVIE = "<b>Kino malumotlarini tasdiqlaysizmi?</b>";
+  String MSG_SAVED_MOVIE = "Kino malumotlari muvaffaqiyatli qo'shildi✅";
+  String MSG_MOVIE_DETAILS_DELETED = "Kino malumotlari o'chirildi";
+  String MSG_UPLOAD_MOVIE_TO_CONNECT = "<b>‼\uFE0F‼\uFE0FKino trailerini va kinoni kanallarga, botda uzulish bo'lmasligi uchun tezroq yuklang</b>";
+
+
+  String MSG_SELECT_PARAMETER = "O'zgartirmoqchi bo'lgan parameteringizni tanlang";
 }
