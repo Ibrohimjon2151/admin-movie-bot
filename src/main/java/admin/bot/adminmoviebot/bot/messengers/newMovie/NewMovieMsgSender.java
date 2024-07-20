@@ -6,7 +6,7 @@ import admin.bot.adminmoviebot.bot.messengers.util.TaskUtil;
 import admin.bot.adminmoviebot.dbConfig.entity.Category;
 import admin.bot.adminmoviebot.dbConfig.entity.Movie;
 import admin.bot.adminmoviebot.dbConfig.repository.CategoryRepository;
-import admin.bot.adminmoviebot.dbConfig.service.UserService;
+import admin.bot.adminmoviebot.dbConfig.service.user.service.UserService;
 import admin.bot.adminmoviebot.dbConfig.service.movie.service.MovieService;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,7 +17,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.util.Arrays;
 import java.util.List;
 
 import static admin.bot.adminmoviebot.bot.constants.BotState.*;
@@ -51,7 +50,9 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
     String[] codeData = {code};
     //START TO SAVE MOVIE
     movieService.saveMovieCode(code);
-    currentMovieCode = code;
+
+    userService.saveMovieCode(update,code);
+    currentMovieCode = userService.getUsersMovieCode(update);
     InlineKeyboardMarkup twoColumnInlineKeyboard = TaskUtil.createTwoColumnInlineKeyboard(copyButton, codeData);
     sendMessage.setReplyMarkup(twoColumnInlineKeyboard);
     return sendMessage;
@@ -70,12 +71,15 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     clipboard.setContents(stringSelection, null);
 
+    // SET USER'S PREVIOUS STATE
+    userService.changeUsersPreviousStateByChatId(update, ST_SAVE_NAME_FIRST);
     return editMessageText;
   }
 
   // SAVE NAME WHICH IS RECEIVED AND SEND CATEGORIES LIST
   @Override
   public SendMessage saveNameChooseCategory(Update update) {
+    currentMovieCode = userService.getUsersMovieCode(update);
     SendMessage editMessageText = new SendMessage();
     editMessageText.setChatId(TaskUtil.getChatIdStr(update));
     editMessageText.setText(Messages.MSG_CHOOSE_MOVIE_CATEGORY);
@@ -91,8 +95,12 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
     editMessageText.setReplyMarkup(categoriesButtons);
 
     //SAVE MOVIE'S NAME
-    String name = update.getMessage().getText();
-    movieService.saveMovieName(currentMovieCode, name);
+    if (userService.getUserPreviousState(TaskUtil.getChatId(update)).equals(ST_SAVE_NAME_FIRST)) {
+      String name = update.getMessage().getText();
+      movieService.saveMovieName(currentMovieCode, name);
+    }
+
+    userService.changeUsersPreviousStateByChatId(update, ST_SAVE_CATEGORY_FIRST);
 
     return editMessageText;
   }
@@ -100,21 +108,24 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
 
   // SAVE CATEGORY AND SEND LANGUAGES LIST
   @Override
-  public EditMessageText saveCategoryChooseLang(Update update) {
-    EditMessageText editMessageText = new EditMessageText();
-    editMessageText.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
+  public SendMessage saveCategoryChooseLang(Update update) {
+    currentMovieCode = userService.getUsersMovieCode(update);
+    SendMessage editMessageText = new SendMessage();
     editMessageText.setChatId(TaskUtil.getChatIdStr(update));
     editMessageText.setText(Messages.MSG_CHOOSE_LANG);
 
-    Language[] values = Language.values();
     String[] languages = {LanguageCode.LANG_UZB, LanguageCode.LANG_ENG, LanguageCode.LANG_RU};
     String[] langButtons = {Buttons.BTN_UZB_FLAG, Buttons.BTN_ENG_FLAG, Buttons.BTN_RU_FLAG};
     InlineKeyboardMarkup twoColumnInlineKeyboard = TaskUtil.createTwoColumnInlineKeyboard(langButtons, languages);
     editMessageText.setReplyMarkup(twoColumnInlineKeyboard);
 
     //SAVE CATEGORY
-    String data = update.getCallbackQuery().getData();
-    movieService.saveMovieCategoryId(currentMovieCode, data);
+    if (userService.getUserPreviousState(TaskUtil.getChatId(update)).equals(ST_SAVE_CATEGORY_FIRST)) {
+      String data = update.getCallbackQuery().getData();
+      movieService.saveMovieCategoryId(currentMovieCode, data);
+    }
+    // SET USER'S PREVIOUS STATE
+    userService.changeUsersPreviousStateByChatId(update, ST_SAVE_LANG_FIRST);
 
     return editMessageText;
   }
@@ -122,9 +133,9 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
 
   // SAVE SELECTED LANG AND SEND QUALITIES LIST
   @Override
-  public EditMessageText saveLangChooseQuality(Update update) {
-    EditMessageText editMessageText = new EditMessageText();
-    editMessageText.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
+  public SendMessage saveLangChooseQuality(Update update) {
+    currentMovieCode = userService.getUsersMovieCode(update);
+    SendMessage editMessageText = new SendMessage();
     editMessageText.setChatId(TaskUtil.getChatIdStr(update));
     editMessageText.setText(Messages.MSG_CHOOSE_QUALITY);
 
@@ -132,8 +143,14 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
     InlineKeyboardMarkup twoColumnInlineKeyboard = TaskUtil.createTwoColumnInlineKeyboard(btnQualities, btnQualities);
     editMessageText.setReplyMarkup(twoColumnInlineKeyboard);
 
+
     //SAVE LANG OF MOVIE
-    movieService.saveMovieLanguage(currentMovieCode, update.getCallbackQuery().getData());
+    if (userService.getUserPreviousState(TaskUtil.getChatId(update)).equals(ST_SAVE_LANG_FIRST)) {
+      movieService.saveMovieLanguage(currentMovieCode, update.getCallbackQuery().getData());
+    }
+    // SET USER'S PREVIOUS STATE
+    userService.changeUsersPreviousStateByChatId(update, ST_SAVE_QUALITY_FIRST);
+
     return editMessageText;
   }
 
@@ -141,10 +158,15 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
   // SAVE QUALITY OF MOVIE AND ASK LENGTH OF MOVIE
   @Override
   public SendMessage saveQualitySendRunTime(Update update) {
+    currentMovieCode = userService.getUsersMovieCode(update);
     SendMessage sendMessage = new SendMessage();
     sendMessage.setChatId(TaskUtil.getChatIdStr(update));
     sendMessage.setText(Messages.MSG_ENTER_LENGTH_MOVIE);
-    movieService.saveMovieQuality(currentMovieCode, update.getCallbackQuery().getData());
+    if (userService.getUserPreviousState(TaskUtil.getChatId(update)).equals(ST_SAVE_QUALITY_FIRST)) {
+      movieService.saveMovieQuality(currentMovieCode, update.getCallbackQuery().getData());
+    }
+    // SET USER'S PREVIOUS STATE
+    userService.changeUsersPreviousStateByChatId(update, ST_SAVE_RUNTIME_FIRST);
     return sendMessage;
   }
 
@@ -152,32 +174,78 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
   // SAVE RUN TIME OF MOVIE AND ASK SIZE
   @Override
   public SendMessage saveMovieRunTimeSendSize(Update update) {
+    currentMovieCode = userService.getUsersMovieCode(update);
     SendMessage sendMessage = new SendMessage();
     sendMessage.setChatId(TaskUtil.getChatIdStr(update));
     sendMessage.setText(Messages.MSG_ENTER_SIZE);
 
     //SAVE RUNTIME
-    movieService.saveMovieRunTime(currentMovieCode, update.getMessage().getText());
+    if (userService.getUserPreviousState(TaskUtil.getChatId(update)).equals(ST_SAVE_RUNTIME_FIRST)) {
+      movieService.saveMovieRunTime(currentMovieCode, update.getMessage().getText());
+    }
+
+    // SET USER'S PREVIOUS STATE
+    userService.changeUsersPreviousStateByChatId(update, ST_SAVE_SIZE_FIRST);
     return sendMessage;
   }
 
   @Override
   public SendMessage saveSizeSendProductionYear(Update update) {
+    currentMovieCode = userService.getUsersMovieCode(update);
     SendMessage sendMessage = new SendMessage();
     sendMessage.setChatId(TaskUtil.getChatIdStr(update));
     sendMessage.setText(Messages.MSG_ENTER_PRODUCTION_YEAR);
     sendMessage.enableHtml(true);
-
-    movieService.saveMovieSize(currentMovieCode, update.getMessage().getText());
+    // SAVE MOVIE'S SIZE
+    if (userService.getUserPreviousState(TaskUtil.getChatId(update)).equals(ST_SAVE_SIZE_FIRST)) {
+      movieService.saveMovieSize(currentMovieCode, update.getMessage().getText());
+    }
+    userService.changeUsersPreviousStateByChatId(update, ST_SAVE_YEAR_FIRST);
     return sendMessage;
   }
 
   @Override
   public SendMessage saveMovieYearSendConfirmation(Update update) {
+    currentMovieCode = userService.getUsersMovieCode(update);
     SendMessage sendMessage = new SendMessage();
     sendMessage.setChatId(TaskUtil.getChatIdStr(update));
     sendMessage.enableHtml(true);
-    movieService.saveMovieYear(currentMovieCode, update.getMessage().getText());
+    if (ST_SAVE_YEAR_FIRST.equals(userService.getUserPreviousState(TaskUtil.getChatId(update)))) {
+      movieService.saveMovieYear(currentMovieCode, update.getMessage().getText());
+    }
+
+    String message;
+    if (update.hasCallbackQuery()) {
+      message = update.getCallbackQuery().getData();
+    } else {
+      message = update.getMessage().getText();
+    }
+    BotState previousState = userService.getUserPreviousState(TaskUtil.getChatId(update));
+    switch (previousState) {
+      case ST_SAVE_NAME_EDIT -> {
+        movieService.saveMovieName(currentMovieCode, message);
+      }
+      case ST_SAVE_CATEGORY_EDIT -> {
+        movieService.saveMovieCategoryId(currentMovieCode, message);
+      }
+      case ST_SAVE_LANG_EDIT -> {
+        movieService.saveMovieLanguage(currentMovieCode, message);
+      }
+      case ST_SAVE_QUALITY_EDIT ->  {
+        movieService.saveMovieQuality(currentMovieCode, message);
+      }
+      case ST_SAVE_YEAR_EDIT ->   {
+        movieService.saveMovieYear(currentMovieCode, message);
+      }
+      case ST_SAVE_SIZE_EDIT->   {
+        movieService.saveMovieSize(currentMovieCode, message);
+      }
+      case ST_SAVE_DURATION_EDIT ->  {
+        movieService.saveMovieRunTime(currentMovieCode, message);
+      }
+    }
+
+
     Movie movie = movieService.getMovie(currentMovieCode);
     StringBuilder movieDetails = getStringBuilder(movie);
     sendMessage.setText(String.valueOf(movieDetails));
@@ -225,13 +293,11 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
   @Override
   public EditMessageText sendEditParameters(Update update) {
 
-
-
     EditMessageText sendMessage = new EditMessageText();
     sendMessage.setChatId(TaskUtil.getChatIdStr(update));
     sendMessage.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
     sendMessage.setText(Messages.MSG_SELECT_PARAMETER);
-    String[] parameters = {Buttons.BTN_MOVIE_NAME,Buttons.BTN_MOVIE_GENRE,Buttons.BTN_MOVIE_LANG,Buttons.BTN_MOVIE_QUALITY,Buttons.BTN_MOVIE_YEAR,Buttons.BTN_MOVIE_SIZE,Buttons.BTN_MOVIE_DURATION};
+    String[] parameters = {Buttons.BTN_MOVIE_NAME, Buttons.BTN_MOVIE_GENRE, Buttons.BTN_MOVIE_LANG, Buttons.BTN_MOVIE_QUALITY, Buttons.BTN_MOVIE_YEAR, Buttons.BTN_MOVIE_SIZE, Buttons.BTN_MOVIE_DURATION};
     InlineKeyboardMarkup twoColumnInlineKeyboard = TaskUtil.createTwoColumnInlineKeyboard(parameters, parameters);
     sendMessage.setReplyMarkup(twoColumnInlineKeyboard);
     return sendMessage;
@@ -242,10 +308,36 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
   public SendMessage editExactParameter(Update update) {
     SendMessage sendMessage = new SendMessage();
     String data = update.getCallbackQuery().getData();
-    switch (data){
+    userService.changeUsersStateByChatId(update, ST_MOVIE_CONFIRM);
+
+    switch (data) {
       case Buttons.BTN_MOVIE_NAME -> {
-        userService.changeUsersStateByChatId(update,ST_MOVIE_CONFIRM);
         sendMessage = copyCodeSendName(update);
+        userService.changeUsersPreviousStateByChatId(update, ST_SAVE_NAME_EDIT);
+      }
+      case Buttons.BTN_MOVIE_GENRE -> {
+        sendMessage = saveNameChooseCategory(update);
+        userService.changeUsersPreviousStateByChatId(update, ST_SAVE_CATEGORY_EDIT);
+      }
+      case Buttons.BTN_MOVIE_LANG -> {
+        sendMessage = saveCategoryChooseLang(update);
+        userService.changeUsersPreviousStateByChatId(update, ST_SAVE_LANG_EDIT);
+      }
+      case Buttons.BTN_MOVIE_QUALITY -> {
+        sendMessage = saveLangChooseQuality(update);
+        userService.changeUsersPreviousStateByChatId(update, ST_SAVE_QUALITY_EDIT);
+      }
+      case Buttons.BTN_MOVIE_YEAR -> {
+        sendMessage = saveSizeSendProductionYear(update);
+        userService.changeUsersPreviousStateByChatId(update, ST_SAVE_YEAR_EDIT);
+      }
+      case Buttons.BTN_MOVIE_SIZE -> {
+        sendMessage = saveMovieRunTimeSendSize(update);
+        userService.changeUsersPreviousStateByChatId(update, ST_SAVE_SIZE_EDIT);
+      }
+      case Buttons.BTN_MOVIE_DURATION -> {
+        sendMessage = saveQualitySendRunTime(update);
+        userService.changeUsersPreviousStateByChatId(update, ST_SAVE_DURATION_EDIT);
       }
     }
     return sendMessage;

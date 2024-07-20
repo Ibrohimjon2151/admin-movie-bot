@@ -18,23 +18,25 @@ import lombok.NoArgsConstructor;
 @Entity(name = "users")
 public class User extends AbstractEntity {
 
- @Column(name = "chat_id", nullable = false, unique = true)
- private Long chatId;
+  @Column(name = "chat_id", nullable = false, unique = true)
+  private Long chatId;
 
- @Enumerated(EnumType.STRING)
- @Column(name = "bot_state", nullable = false)
- private BotState botState;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "bot_state", nullable = false)
+  private BotState botState;
 
- @Enumerated(EnumType.STRING)
- private BotState previousState;
+  @Enumerated(EnumType.STRING)
+  private BotState previousState;
 
- @Column(name = "lang", nullable = false)
- private int lang;
+  @Column(name = "lang", nullable = false)
+  private int lang;
 
- private String fullName;
+  private String fullName;
 
- private String userName;
+  private String userName;
 
+  private String movieCode;
 
+  private boolean admin;
 
 }

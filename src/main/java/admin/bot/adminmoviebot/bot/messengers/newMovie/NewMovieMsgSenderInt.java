@@ -15,9 +15,9 @@ public sealed interface NewMovieMsgSenderInt permits NewMovieMsgSender{
 
   SendMessage saveNameChooseCategory(Update update);
 
-  EditMessageText saveCategoryChooseLang(Update update);
+  SendMessage saveCategoryChooseLang(Update update);
 
-  EditMessageText saveLangChooseQuality(Update update);
+  SendMessage saveLangChooseQuality(Update update);
 
   SendMessage saveQualitySendRunTime(Update update);
 

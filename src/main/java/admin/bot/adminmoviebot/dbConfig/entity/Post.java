@@ -9,4 +9,8 @@ import lombok.*;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 public class Post extends AbstractEntity {
+
+  private String channelUrl;
+
+  private Long messageId;
 }

@@ -4,45 +4,58 @@ import admin.bot.adminmoviebot.bot.component.BotConfigComponent;
 import admin.bot.adminmoviebot.bot.constants.BotState;
 import admin.bot.adminmoviebot.bot.constants.Buttons;
 import admin.bot.adminmoviebot.bot.constants.Messages;
+import admin.bot.adminmoviebot.bot.messengers.category.CategoryMsgSender;
 import admin.bot.adminmoviebot.bot.messengers.menu.MenuMessageSender;
 import admin.bot.adminmoviebot.bot.messengers.newMovie.NewMovieMsgSender;
+import admin.bot.adminmoviebot.bot.messengers.send.message.users.SendMessageUsers;
 import admin.bot.adminmoviebot.bot.messengers.util.TaskUtil;
-import admin.bot.adminmoviebot.dbConfig.service.UserService;
-import jakarta.persistence.Cache;
+import admin.bot.adminmoviebot.dbConfig.service.user.service.UserService;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import static admin.bot.adminmoviebot.bot.constants.BotState.*;
+import static admin.bot.adminmoviebot.bot.constants.Messages.MSG_ENTER_WANTED_MESSAGE;
 import static admin.bot.adminmoviebot.bot.constants.Messages.MSG_START;
 
 @Component
 public class MainAdminComponent extends TelegramLongPollingBot {
 
+  private final UsersBotComponent usersBotComponent;
   private final BotConfigComponent botConfigComponent;
   private final MenuMessageSender menuMessageSender;
   private final UserService userService;
   private final NewMovieMsgSender newMovieMsgSender;
+  private final CategoryMsgSender categoryMsgSender;
+  private final SendMessageUsers sendMessageUsers;
 
-  public MainAdminComponent(BotConfigComponent botConfigComponent, MenuMessageSender menuMessageSender, UserService userService, NewMovieMsgSender newMovieMsgSender) {
+  public MainAdminComponent(UsersBotComponent usersBotComponent, BotConfigComponent botConfigComponent, MenuMessageSender menuMessageSender, UserService userService, NewMovieMsgSender newMovieMsgSender, CategoryMsgSender categoryMsgSender, SendMessageUsers sendMessageUsers) {
+    this.usersBotComponent = usersBotComponent;
     this.botConfigComponent = botConfigComponent;
     this.menuMessageSender = menuMessageSender;
     this.userService = userService;
     this.newMovieMsgSender = newMovieMsgSender;
+    this.categoryMsgSender = categoryMsgSender;
+    this.sendMessageUsers = sendMessageUsers;
   }
 
 
   String message = "";
-  String data = "";
   BotState userState;
 
   @SneakyThrows
   @Override
   public void onUpdateReceived(Update update) {
-    userState = userService.getUsersStateByChatId(TaskUtil.getChatId(update));
-    if (update.hasMessage()) {
-      message = update.getMessage().getText();
+    if (update.hasChannelPost()) {
+
+    } else if (update.hasMessage()) {
+      userState = userService.getUsersStateByChatId(TaskUtil.getChatId(update));
+      if (update.getMessage().hasText()) {
+        message = update.getMessage().getText();
+      }
       if (message.equals(MSG_START)) {
         execute(menuMessageSender.sendMenu(update));
         userService.changeUsersStateByChatId(update, ST_MENU);
@@ -61,7 +74,12 @@ public class MainAdminComponent extends TelegramLongPollingBot {
                 userService.changeUsersStateByChatId(update, ST_MOVIE_CODE);
               }
               case Buttons.BTN_SEND_MSG_USERS -> {
-                // METHODS FOR SENDING MESSAGE TO USERS
+                userService.changeUsersStateByChatId(update, ST_SEND_MESSAGE_USERS);
+                execute(TaskUtil.messageSender(update, MSG_ENTER_WANTED_MESSAGE));
+              }
+              case Buttons.BTN_ADD_NEW_CATEGORY -> {
+                userService.changeUsersStateByChatId(update, ST_NEW_CATEGORY);
+                execute(categoryMsgSender.sendAllCategoriesList(update));
               }
             }
           }
@@ -83,9 +101,26 @@ public class MainAdminComponent extends TelegramLongPollingBot {
             execute(TaskUtil.messageSender(update, Messages.MSG_CONFIRM_DETAILS_MOVIE));
             execute(newMovieMsgSender.saveMovieYearSendConfirmation(update));
           }
+          case ST_ENTER_NEW_CATEGORY_NAME -> {
+            userService.changeUsersStateByChatId(update, ST_NEW_CATEGORY);
+            categoryMsgSender.saveCategoryName(update);
+            execute(TaskUtil.messageSender(update, Messages.MSG_SAVED_MOVIE));
+            execute(categoryMsgSender.sendAllCategoriesList(update));
+          }
+          case ST_SEND_MESSAGE_USERS -> {
+            if (update.getMessage().hasPhoto()) {
+              usersBotComponent.sendPhotoFormatMessage(update);
+            } else {
+              usersBotComponent.sendTextFormatMessage(update.getMessage().getText());
+            }
+            execute(TaskUtil.messageSender(update, Messages.MSG_MESSAGE_SENT));
+            userService.changeUsersStateByChatId(update, ST_MENU);
+            execute(menuMessageSender.sendMenu(update));
+          }
         }
       }
     } else if (update.hasCallbackQuery()) {
+      userState = userService.getUsersStateByChatId(TaskUtil.getChatId(update));
       String data = update.getCallbackQuery().getData();
       switch (userState) {
         case ST_MOVIE_CODE -> {
@@ -95,10 +130,12 @@ public class MainAdminComponent extends TelegramLongPollingBot {
         }
         case ST_CHOOSE_LANGUAGE -> {
           userService.changeUsersStateByChatId(update, ST_MOVIE_QUALITY);
+          execute(menuMessageSender.deleteMessage(update));
           execute(newMovieMsgSender.saveCategoryChooseLang(update));
         }
         case ST_MOVIE_QUALITY -> {
           userService.changeUsersStateByChatId(update, ST_MOVIE_RUNTIME);
+          execute(menuMessageSender.deleteMessage(update));
           execute(newMovieMsgSender.saveLangChooseQuality(update));
         }
         case ST_MOVIE_RUNTIME -> {
@@ -127,9 +164,18 @@ public class MainAdminComponent extends TelegramLongPollingBot {
             }
           }
         }
+        case ST_MOVIE_CONFIRM -> {
+          userService.changeUsersStateByChatId(update, ST_REVIEW_ADDED_MOVIE);
+          execute(TaskUtil.messageSender(update, Messages.MSG_CONFIRM_DETAILS_MOVIE));
+          execute(newMovieMsgSender.saveMovieYearSendConfirmation(update));
+        }
         case ST_EDIT_MOVIE -> {
           execute(menuMessageSender.deleteMessage(update));
           execute(newMovieMsgSender.editExactParameter(update));
+        }
+        case ST_NEW_CATEGORY -> {
+          execute(menuMessageSender.deleteMessage(update));
+          execute(categoryMsgSender.deleteOrAddCategory(update));
         }
       }
     }

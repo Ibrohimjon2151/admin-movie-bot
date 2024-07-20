@@ -10,6 +10,7 @@ public interface Buttons {
   String BTN_ANALYSE = "Bot analyse⚡\uFE0F";
   String BTN_SEND_MSG_USERS = "Bot userlarga habar jo'natish \uD83D\uDCAC";
   String BTN_ADD_NEW_MOVIE = "Yangi kino qo'shish ➕";
+  String BTN_ADD_NEW_CATEGORY = "Yangi janr qo'shish ➕";
   String BTN_COPY_CODE = "Copy ©\uFE0F";
 
   String [] BTN_QUALITIES = {"144","240","360","480","720","1080"};
@@ -25,4 +26,9 @@ public interface Buttons {
   String BTN_MOVIE_YEAR = "Yili";
   String BTN_MOVIE_SIZE = "Hajmi";
   String BTN_MOVIE_DURATION = "Davomiyligi";
+
+  String BTN_PLUS = "➕";
+  String BTN_MINUS = "➖";
+
+  String BTN_BACK = "🔙Ortga";
 }

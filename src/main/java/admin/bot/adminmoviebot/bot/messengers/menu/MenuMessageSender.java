@@ -3,9 +3,8 @@ package admin.bot.adminmoviebot.bot.messengers.menu;
 import admin.bot.adminmoviebot.bot.constants.BotState;
 import admin.bot.adminmoviebot.bot.constants.Messages;
 import admin.bot.adminmoviebot.bot.messengers.util.TaskUtil;
-import admin.bot.adminmoviebot.dbConfig.entity.userBot.User;
 import admin.bot.adminmoviebot.dbConfig.payload.UserDto;
-import admin.bot.adminmoviebot.dbConfig.service.UserService;
+import admin.bot.adminmoviebot.dbConfig.service.user.service.UserService;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
@@ -38,7 +37,7 @@ public final class MenuMessageSender implements MenuMessageSenderInt {
     }
     sendMessage.setChatId(TaskUtil.getChatIdStr(update));
 
-    String[] menus = {BTN_ANALYSE, BTN_SEND_MSG_USERS, BTN_ADD_NEW_MOVIE};
+    String[] menus = {BTN_ANALYSE, BTN_SEND_MSG_USERS, BTN_ADD_NEW_MOVIE,BTN_ADD_NEW_CATEGORY};
     ReplyKeyboardMarkup keyboardMarkup = TaskUtil.createTwoColumnKeyboard(menus);
     sendMessage.setReplyMarkup(keyboardMarkup);
 
