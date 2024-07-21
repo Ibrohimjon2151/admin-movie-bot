@@ -3,6 +3,7 @@ package admin.bot.adminmoviebot.bot.component;
 import admin.bot.adminmoviebot.bot.MainAdminComponent;
 import lombok.Getter;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -16,6 +17,7 @@ public class BotConfigComponent {
   private final String botToken = "7477750373:AAFfsHUJgSmKmcTdQgvmwEXvLb0JfXMkROQ";
 
   @Bean
+  @Primary
   public TelegramBotsApi telegramBotsApi(MainAdminComponent mainAdminComponent) throws TelegramApiException {
     TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
     telegramBotsApi.registerBot(mainAdminComponent);

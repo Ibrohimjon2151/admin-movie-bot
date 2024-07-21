@@ -22,4 +22,6 @@ public sealed interface MovieServiceInt permits MovieService {
   void saveMovieYear(String currentMovieCode, String text);
 
   Movie getMovie(String movieCode);
+
+  Movie getMoviePostIsNull();
 }

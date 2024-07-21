@@ -2,7 +2,7 @@ package admin.bot.adminmoviebot.dbConfig.service.user.service;
 
 import admin.bot.adminmoviebot.bot.constants.BotState;
 import admin.bot.adminmoviebot.bot.messengers.util.TaskUtil;
-import admin.bot.adminmoviebot.dbConfig.entity.userBot.User;
+import admin.bot.adminmoviebot.dbConfig.entity.user.bot.User;
 import admin.bot.adminmoviebot.dbConfig.payload.UserDto;
 import admin.bot.adminmoviebot.dbConfig.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -37,13 +37,22 @@ public class UserService {
     return optionalUser.filter(user -> user.getBotState() != null).map(User::getBotState).orElse(BotState.ST_MENU);
   }
 
-  // CHANGE USR STATE
-  public void changeUsersStateByChatId(Update update, BotState newState) {
-    User user = getUser(update);
+  // CHANGE USR STATE BY UPDATE
+  public void changeUsersStateByChatId(Long chatId, BotState newState) {
+    Optional<User> byChatId = userRepository.findByChatId(chatId);
+    User user = byChatId.get();
     user.setBotState(newState);
     userRepository.save(user);
   }
 
+
+
+  // CHANGE USR STATE
+  public void changeUsersStateByUpdate(Update update, BotState newState) {
+    User user = getUser(update);
+    user.setBotState(newState);
+    userRepository.save(user);
+  }
 
   // CHANGE PREVIOUS STATE
   public void changeUsersPreviousStateByChatId(Update update, BotState newState) {
@@ -87,6 +96,11 @@ public class UserService {
 
   public List<User> getAll(){
     return userRepository.findAll();
+  }
+
+  // GET ADMIN'S ID
+  public List<Long> getAdminsUserId() {
+   return userRepository.findAllChatIds();
   }
 }
 

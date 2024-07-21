@@ -5,6 +5,8 @@ import admin.bot.adminmoviebot.dbConfig.entity.template.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @EqualsAndHashCode(callSuper = true)
 @Getter
@@ -18,7 +20,6 @@ public class Movie extends AbstractEntity {
   @Column(nullable = false)
   private String movieCode;
 
-
   @ManyToOne
   private Category category;
 
@@ -31,4 +32,7 @@ public class Movie extends AbstractEntity {
   private String size;
 
   private String productionYear;
+
+  @OneToMany
+  private List<Post> posts;
 }

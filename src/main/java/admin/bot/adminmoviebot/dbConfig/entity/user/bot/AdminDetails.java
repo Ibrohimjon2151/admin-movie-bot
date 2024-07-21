@@ -1,4 +1,4 @@
-package admin.bot.adminmoviebot.dbConfig.entity.userBot;
+package admin.bot.adminmoviebot.dbConfig.entity.user.bot;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

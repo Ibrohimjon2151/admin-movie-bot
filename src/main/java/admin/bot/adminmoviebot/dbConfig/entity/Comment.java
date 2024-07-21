@@ -1,7 +1,7 @@
 package admin.bot.adminmoviebot.dbConfig.entity;
 
 import admin.bot.adminmoviebot.dbConfig.entity.template.AbstractEntity;
-import admin.bot.adminmoviebot.dbConfig.entity.userBot.User;
+import admin.bot.adminmoviebot.dbConfig.entity.user.bot.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.*;

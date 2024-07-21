@@ -1,4 +1,4 @@
-package admin.bot.adminmoviebot.dbConfig.entity.userBot;
+package admin.bot.adminmoviebot.dbConfig.entity.user.bot;
 
 import admin.bot.adminmoviebot.bot.constants.BotState;
 import admin.bot.adminmoviebot.dbConfig.entity.template.AbstractEntity;

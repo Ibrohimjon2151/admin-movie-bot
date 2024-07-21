@@ -1,6 +1,5 @@
 package admin.bot.adminmoviebot.dbConfig.service.movie.service;
 
-import admin.bot.adminmoviebot.bot.constants.Language;
 import admin.bot.adminmoviebot.dbConfig.entity.Category;
 import admin.bot.adminmoviebot.dbConfig.entity.Movie;
 import admin.bot.adminmoviebot.dbConfig.repository.CategoryRepository;
@@ -94,5 +93,12 @@ public final class MovieService implements MovieServiceInt {
   public Movie getMovie(String movieCode) {
     Optional<Movie> optionalMovie = movieRepository.findByMovieCode(movieCode);
     return optionalMovie.orElseThrow(() -> new RuntimeException("Movie not found"));
+  }
+
+  // GET MOVIE WHICH POST ID IS NULL
+  @Override
+  public Movie getMoviePostIsNull() {
+    Optional<Movie> optionalMovie = movieRepository.findByPostsIsNull();
+   return optionalMovie.orElse(null);
   }
 }

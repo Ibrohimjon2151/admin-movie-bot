@@ -29,7 +29,6 @@ public final class SendMessageUsers implements SendMessageUsersInt {
   @Override
   public SendPhoto createSendPhotoFormat(Update update) {
 
-
     return null;
   }
 }

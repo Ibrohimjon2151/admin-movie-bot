@@ -1,20 +1,24 @@
 package admin.bot.adminmoviebot.bot;
 
 import admin.bot.adminmoviebot.bot.component.UsersBotConfig;
-import admin.bot.adminmoviebot.dbConfig.entity.userBot.User;
+import admin.bot.adminmoviebot.dbConfig.entity.user.bot.User;
 import admin.bot.adminmoviebot.dbConfig.service.user.service.UserService;
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.ForwardMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.send.SendVideo;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
-import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
 
 @Component
+@Qualifier("usersBotComponent")
 public class UsersBotComponent extends TelegramLongPollingBot {
 
   private final UsersBotConfig usersBotConfig;
@@ -24,9 +28,10 @@ public class UsersBotComponent extends TelegramLongPollingBot {
     this.usersBotConfig = usersBotConfig;
     this.userService = userService;
   }
-
+  @SneakyThrows
   @Override
   public void onUpdateReceived(Update update) {
+
   }
 
   public void sendTextFormatMessage(String message) {
@@ -43,20 +48,30 @@ public class UsersBotComponent extends TelegramLongPollingBot {
     }
   }
 
-  public void sendPhotoFormatMessage(Update update) throws TelegramApiException {
+  public void sendPhotoFormatMessage(Update update, InputFile inputFile) throws TelegramApiException {
     List<User> allUser = userService.getAll();
     for (User user : allUser) {
       SendPhoto sendPhoto = new SendPhoto();
-      List<PhotoSize> photos = update.getMessage().getPhoto();
       sendPhoto.setChatId(String.valueOf(user.getChatId()));
-
-      PhotoSize largestPhoto = photos.get(photos.size() - 1);
-      String fileId = largestPhoto.getFileId();
-
       sendPhoto.setCaption(update.getMessage().getCaption());
-
-      sendPhoto.setPhoto(new InputFile(fileId));
+      sendPhoto.setPhoto(inputFile);
       execute(sendPhoto);
+    }
+  }
+
+  public void sendVideoFormatMessage(Update update, InputFile inputFile) throws TelegramApiException {
+    List<User> users = userService.getAll();
+    for (User user : users) {
+      SendVideo sendVideo = new SendVideo();
+      sendVideo.setCaption(update.getMessage().getCaption());
+      sendVideo.setVideo(inputFile);
+      sendVideo.setChatId(String.valueOf(user.getChatId()));
+      execute(sendVideo);
+    }
+  }
+  public void forwardMessageToUsers(List<ForwardMessage> forwardMessages) throws TelegramApiException {
+    for (ForwardMessage forwardMessage : forwardMessages) {
+      execute(forwardMessage);
     }
   }
 
@@ -69,4 +84,5 @@ public class UsersBotComponent extends TelegramLongPollingBot {
   public String getBotToken() {
     return usersBotConfig.getBotToken();
   }
+
 }

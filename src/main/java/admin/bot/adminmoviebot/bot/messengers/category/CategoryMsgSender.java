@@ -94,9 +94,9 @@ public final class CategoryMsgSender implements CategoryMsgSenderInt {
     String data = update.getCallbackQuery().getData();
     if (Buttons.BTN_PLUS.equals(data)) {
       sendMessage = addNewCategory(update);
-      userService.changeUsersStateByChatId(update, BotState.ST_ENTER_NEW_CATEGORY_NAME);
+      userService.changeUsersStateByUpdate(update, BotState.ST_ENTER_NEW_CATEGORY_NAME);
     } else if (Buttons.BTN_BACK.equals(data)) {
-      userService.changeUsersStateByChatId(update, ST_MENU);
+      userService.changeUsersStateByUpdate(update, ST_MENU);
       sendMessage = menuMessageSender.sendMenu(update);
     } else {
       if (isConvertibleToLong(data)) {

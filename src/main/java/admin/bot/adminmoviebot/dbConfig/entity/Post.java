@@ -10,7 +10,14 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class Post extends AbstractEntity {
 
+  private String movieCode;
+
   private String channelUrl;
 
-  private Long messageId;
+  private Long chatId;
+
+  private Integer messageId;
+
+  // IS THIS POST ORIGINAL MOVIE
+  private boolean originalMovie;
 }

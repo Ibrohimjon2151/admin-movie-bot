@@ -16,7 +16,7 @@ public interface Messages {
   String MSG_CONFIRM_DETAILS_MOVIE = "<b>Kino malumotlarini tasdiqlaysizmi?</b>";
   String MSG_SAVED_MOVIE = "Muvaffaqiyatli qo'shildi✅";
   String MSG_MOVIE_DETAILS_DELETED = "Kino malumotlari o'chirildi";
-  String MSG_UPLOAD_MOVIE_TO_CONNECT = "<b>‼\uFE0F‼\uFE0FKino trailerini va kinoni kanallarga, botda uzulish bo'lmasligi uchun tezroq yuklang</b>";
+  String MSG_UPLOAD_MOVIE_TO_CONNECT = "<b>‼\uFE0F‼\uFE0FKino trailerini va kinoni kanallarga tezroq yuklang, botda uzulish bo'lmasligi uchun</b>";
 
 
   String MSG_SELECT_PARAMETER = "O'zgartirmoqchi bo'lgan parameteringizni tanlang";
@@ -24,4 +24,6 @@ public interface Messages {
   String MSG_ENTER_CATEGORY_NAME = "Janr nomini jo'nating (smile-lardan foydalanishingiz mumkin)";
   String MSG_ENTER_WANTED_MESSAGE = "❕❕❕Xabarni diqqat bilan tekshirib, tayyor holda jo'nating chunki bu xabar hamma bot foydalanuvchilariga avtomatik jo'natiladi";
   String MSG_MESSAGE_SENT = "Xabar muvaffaqiyatli jo'natildi✅";
+  String MSG_FORWARD_BOT_USERS = "Bot userlariga jo'natasizmi?";
+  String MSG_CONNECT_TRAILER = " kino codeli kino malumotlarini trailer bilan bog'laysizmi";
 }

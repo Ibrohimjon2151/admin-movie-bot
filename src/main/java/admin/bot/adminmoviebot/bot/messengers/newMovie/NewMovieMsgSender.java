@@ -308,7 +308,7 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
   public SendMessage editExactParameter(Update update) {
     SendMessage sendMessage = new SendMessage();
     String data = update.getCallbackQuery().getData();
-    userService.changeUsersStateByChatId(update, ST_MOVIE_CONFIRM);
+    userService.changeUsersStateByUpdate(update, ST_MOVIE_CONFIRM);
 
     switch (data) {
       case Buttons.BTN_MOVIE_NAME -> {

@@ -10,6 +10,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
   boolean existsByMovieCode(String code);
 
-
   Optional<Movie> findByMovieCode(String code);
+
+  Optional<Movie> findByPostsIsNull();
 }
