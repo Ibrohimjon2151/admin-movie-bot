@@ -1,6 +1,6 @@
-package admin.bot.adminmoviebot.bot.component;
+package admin.bot.adminmoviebot.bot.config;
 
-import admin.bot.adminmoviebot.bot.MainAdminComponent;
+import admin.bot.adminmoviebot.bot.components.MainAdminComponent;
 import lombok.Getter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;

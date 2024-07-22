@@ -14,4 +14,8 @@ public sealed interface ChannelMessengersInt permits ChannelMessengers {
  List<ForwardMessage> forwardMessageToAdmins(Update update);
 
  List<ForwardMessage> forwardSelectedMessageToUsers();
+
+  void connectMovieAndPost();
+
+  boolean checkMessageShareable(Update update);
 }

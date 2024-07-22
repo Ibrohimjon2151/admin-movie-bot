@@ -25,5 +25,7 @@ public interface Messages {
   String MSG_ENTER_WANTED_MESSAGE = "❕❕❕Xabarni diqqat bilan tekshirib, tayyor holda jo'nating chunki bu xabar hamma bot foydalanuvchilariga avtomatik jo'natiladi";
   String MSG_MESSAGE_SENT = "Xabar muvaffaqiyatli jo'natildi✅";
   String MSG_FORWARD_BOT_USERS = "Bot userlariga jo'natasizmi?";
-  String MSG_CONNECT_TRAILER = " kino codeli kino malumotlarini trailer bilan bog'laysizmi";
+  String MSG_CONNECT_TRAILER = " kodli kino malumotlarini trailer bilan bog'laysizmi";
+  String MSG_RESTRICT_ADD_MOVIE = " kodli Kino malumotlariga trailer va kino biriktirilmadi, avval biriktiring";
+  String MSG_CONNECT_ORIGINAL_MOVIE = " kodli Kino malumotlariga ushbu kinoni biriktirasizmi";
 }

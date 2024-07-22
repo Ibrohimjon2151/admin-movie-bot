@@ -1,6 +1,6 @@
-package admin.bot.adminmoviebot.bot;
+package admin.bot.adminmoviebot.bot.components;
 
-import admin.bot.adminmoviebot.bot.component.UsersBotConfig;
+import admin.bot.adminmoviebot.bot.config.UsersBotConfig;
 import admin.bot.adminmoviebot.dbConfig.entity.user.bot.User;
 import admin.bot.adminmoviebot.dbConfig.service.user.service.UserService;
 import lombok.SneakyThrows;

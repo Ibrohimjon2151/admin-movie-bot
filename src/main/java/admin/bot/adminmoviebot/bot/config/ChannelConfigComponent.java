@@ -1,8 +1,7 @@
-package admin.bot.adminmoviebot.bot.component;
+package admin.bot.adminmoviebot.bot.config;
 
 import lombok.Getter;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 @Configuration
 @Getter

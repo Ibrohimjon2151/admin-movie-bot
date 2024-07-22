@@ -1,6 +1,6 @@
 package admin.bot.adminmoviebot.bot.messengers.newMovie;
 
-import admin.bot.adminmoviebot.bot.component.BotConfigComponent;
+import admin.bot.adminmoviebot.bot.config.BotConfigComponent;
 import admin.bot.adminmoviebot.bot.constants.*;
 import admin.bot.adminmoviebot.bot.messengers.util.TaskUtil;
 import admin.bot.adminmoviebot.dbConfig.entity.Category;

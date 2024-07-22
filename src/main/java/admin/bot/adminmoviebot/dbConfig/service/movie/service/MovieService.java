@@ -2,10 +2,13 @@ package admin.bot.adminmoviebot.dbConfig.service.movie.service;
 
 import admin.bot.adminmoviebot.dbConfig.entity.Category;
 import admin.bot.adminmoviebot.dbConfig.entity.Movie;
+import admin.bot.adminmoviebot.dbConfig.entity.Post;
 import admin.bot.adminmoviebot.dbConfig.repository.CategoryRepository;
 import admin.bot.adminmoviebot.dbConfig.repository.MovieRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -98,7 +101,18 @@ public final class MovieService implements MovieServiceInt {
   // GET MOVIE WHICH POST ID IS NULL
   @Override
   public Movie getMoviePostIsNull() {
-    Optional<Movie> optionalMovie = movieRepository.findByPostsIsNull();
-   return optionalMovie.orElse(null);
+    Movie moviesWithOneOrNoPosts = movieRepository.findMoviesWithOneOrNoPosts();
+    return moviesWithOneOrNoPosts;
   }
+
+  //CONNECT MOVIE CODE AND POST ID
+  @Override
+  public void connectMovieAndPost(Movie moviePostIsNull, Post lastPost) {
+    List<Post> posts = moviePostIsNull.getPosts();
+    posts.add(lastPost);
+    moviePostIsNull.setPosts(posts);
+    movieRepository.save(moviePostIsNull);
+  }
+
+
 }

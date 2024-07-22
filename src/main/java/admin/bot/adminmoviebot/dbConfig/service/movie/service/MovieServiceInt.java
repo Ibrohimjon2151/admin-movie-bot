@@ -1,6 +1,7 @@
 package admin.bot.adminmoviebot.dbConfig.service.movie.service;
 
 import admin.bot.adminmoviebot.dbConfig.entity.Movie;
+import admin.bot.adminmoviebot.dbConfig.entity.Post;
 
 public sealed interface MovieServiceInt permits MovieService {
   String generateUniqueCode();
@@ -24,4 +25,7 @@ public sealed interface MovieServiceInt permits MovieService {
   Movie getMovie(String movieCode);
 
   Movie getMoviePostIsNull();
+
+  void connectMovieAndPost(Movie moviePostIsNull, Post lastPost);
+
 }

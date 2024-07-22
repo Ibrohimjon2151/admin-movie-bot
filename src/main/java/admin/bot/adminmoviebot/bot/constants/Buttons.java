@@ -30,11 +30,10 @@ public interface Buttons {
   String BTN_PLUS = "➕";
   String BTN_MINUS = "➖";
   String BTN_BACK = "🔙Ortga";
-  String BTN_CONNECT_TRAILER = "Trailer bilan ulash";
-  String BTN_FORWARD_BOT_USERS = "Bot userlariga jo'natish";
+  String BTN_FORWARD_BOT_USERS = "Bot userlariga jo'natish\uD83D\uDD04";
 
 
   // INLINE BUTTONS' DATA MESSAGE
-  String DATA_PERMIT_FORWARD = "PERMIT_FORWARD";
-  String DATA_BANNED_FORWARD = "BANNED_FORWARD";
+  String DATA_YES_MESSAGE = "PERMIT_FORWARD";
+  String DATA_NO_MESSAGE = "BANNED_FORWARD";
 }
