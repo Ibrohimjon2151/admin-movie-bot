@@ -2,6 +2,7 @@ package admin.bot.adminmoviebot.bot.messengers.category;
 
 import admin.bot.adminmoviebot.bot.constants.BotState;
 import admin.bot.adminmoviebot.bot.constants.Buttons;
+import admin.bot.adminmoviebot.bot.constants.LanguageCode;
 import admin.bot.adminmoviebot.bot.constants.Messages;
 import admin.bot.adminmoviebot.bot.messengers.menu.MenuMessageSender;
 import admin.bot.adminmoviebot.bot.messengers.util.TaskUtil;
@@ -13,12 +14,14 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static admin.bot.adminmoviebot.bot.constants.BotState.ST_MENU;
+import static admin.bot.adminmoviebot.bot.constants.BotState.*;
 
 @Service
 @Slf4j
@@ -27,6 +30,7 @@ public final class CategoryMsgSender implements CategoryMsgSenderInt {
   private final CategoryService categoryService;
   private final MenuMessageSender menuMessageSender;
   private final UserService userService;
+  private static Category category = new Category();
 
   public CategoryMsgSender(CategoryService categoryService, MenuMessageSender menuMessageSender, UserService userService) {
     this.categoryService = categoryService;
@@ -90,17 +94,20 @@ public final class CategoryMsgSender implements CategoryMsgSenderInt {
 
   @Override
   public SendMessage deleteOrAddCategory(Update update) {
-    SendMessage sendMessage = new SendMessage();
+    SendMessage sendMessage;
     String data = update.getCallbackQuery().getData();
     if (Buttons.BTN_PLUS.equals(data)) {
-      sendMessage = addNewCategory(update);
-      userService.changeUsersStateByUpdate(update, BotState.ST_ENTER_NEW_CATEGORY_NAME);
+      sendMessage = chooseLanguageCode(update);
+//      sendMessage = saveCategoryLangSendName(update);
+      userService.changeUsersStateByUpdate(update, BotState.ST_ENTER_NEW_CATEGORY_LANG);
     } else if (Buttons.BTN_BACK.equals(data)) {
       userService.changeUsersStateByUpdate(update, ST_MENU);
       sendMessage = menuMessageSender.sendMenu(update);
     } else {
       if (isConvertibleToLong(data)) {
-        categoryService.deleteCategory(Long.parseLong(data));
+        if (!categoryService.isCategoryUsed(Long.valueOf(data))) {
+          categoryService.deleteCategory(Long.parseLong(data));
+        }
       }
       sendMessage = sendAllCategoriesList(update);
     }
@@ -108,10 +115,12 @@ public final class CategoryMsgSender implements CategoryMsgSenderInt {
   }
 
   @Override
-  public SendMessage addNewCategory(Update update) {
+  public SendMessage saveCategoryLangSendName(Update update) {
     SendMessage sendMessage = new SendMessage();
     sendMessage.setChatId(TaskUtil.getChatIdStr(update));
     sendMessage.setText(Messages.MSG_ENTER_CATEGORY_NAME);
+    category.setLangCode(update.getCallbackQuery().getData());
+    userService.changeUsersStateByUpdate(update, ST_ENTER_NEW_CATEGORY_NAME);
     return sendMessage;
   }
 
@@ -127,8 +136,28 @@ public final class CategoryMsgSender implements CategoryMsgSenderInt {
   @Override
   public void saveCategoryName(Update update) {
     String name = update.getMessage().getText();
-    Category category = new Category();
     category.setName(name);
     categoryService.saveCategory(category);
+  }
+
+  @Override
+  public SendMessage chooseLanguageCode(Update update) {
+    SendMessage sendMessage = getLanguagesList(update, Messages.MSG_CHOOSE_LANG_CATEGORY);
+    // SET USER'S STATE
+    userService.changeUsersStateByUpdate(update, ST_SAVE_LANG_CATEGORY);
+    return sendMessage;
+  }
+
+  public static SendMessage getLanguagesList(Update update, String message) {
+    SendMessage sendMessage = new SendMessage();
+    sendMessage.setChatId(TaskUtil.getChatIdStr(update));
+    sendMessage.setText(message);
+
+    String[] languages = {LanguageCode.LANG_UZB, LanguageCode.LANG_ENG, LanguageCode.LANG_RU};
+    String[] langButtons = {Buttons.BTN_UZB_FLAG, Buttons.BTN_ENG_FLAG, Buttons.BTN_RU_FLAG};
+    InlineKeyboardMarkup twoColumnInlineKeyboard = TaskUtil.createTwoColumnInlineKeyboard(langButtons, languages);
+
+    sendMessage.setReplyMarkup(twoColumnInlineKeyboard);
+    return sendMessage;
   }
 }

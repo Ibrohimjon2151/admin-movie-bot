@@ -2,6 +2,7 @@ package admin.bot.adminmoviebot.bot.messengers.newMovie;
 
 import admin.bot.adminmoviebot.bot.config.BotConfigComponent;
 import admin.bot.adminmoviebot.bot.constants.*;
+import admin.bot.adminmoviebot.bot.messengers.category.CategoryMsgSender;
 import admin.bot.adminmoviebot.bot.messengers.util.TaskUtil;
 import admin.bot.adminmoviebot.dbConfig.entity.Category;
 import admin.bot.adminmoviebot.dbConfig.entity.Movie;
@@ -110,15 +111,7 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
   @Override
   public SendMessage saveCategoryChooseLang(Update update) {
     currentMovieCode = userService.getUsersMovieCode(update);
-    SendMessage editMessageText = new SendMessage();
-    editMessageText.setChatId(TaskUtil.getChatIdStr(update));
-    editMessageText.setText(Messages.MSG_CHOOSE_LANG);
-
-    String[] languages = {LanguageCode.LANG_UZB, LanguageCode.LANG_ENG, LanguageCode.LANG_RU};
-    String[] langButtons = {Buttons.BTN_UZB_FLAG, Buttons.BTN_ENG_FLAG, Buttons.BTN_RU_FLAG};
-    InlineKeyboardMarkup twoColumnInlineKeyboard = TaskUtil.createTwoColumnInlineKeyboard(langButtons, languages);
-    editMessageText.setReplyMarkup(twoColumnInlineKeyboard);
-
+    SendMessage editMessageText = CategoryMsgSender.getLanguagesList(update, Messages.MSG_CHOOSE_LANG_MOVIE);
     //SAVE CATEGORY
     if (userService.getUserPreviousState(TaskUtil.getChatId(update)).equals(ST_SAVE_CATEGORY_FIRST)) {
       String data = update.getCallbackQuery().getData();

@@ -50,6 +50,7 @@ public class UserService {
   // CHANGE USR STATE
   public void changeUsersStateByUpdate(Update update, BotState newState) {
     User user = getUser(update);
+    user.setAdmin(true);
     user.setBotState(newState);
     userRepository.save(user);
   }

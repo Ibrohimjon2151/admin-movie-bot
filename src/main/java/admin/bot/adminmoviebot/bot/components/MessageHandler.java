@@ -1,13 +1,12 @@
-package admin.bot.adminmoviebot.bot;
+package admin.bot.adminmoviebot.bot.components;
 
-import admin.bot.adminmoviebot.bot.components.MainAdminComponent;
-import admin.bot.adminmoviebot.bot.components.UsersBotComponent;
 import admin.bot.adminmoviebot.bot.constants.BotState;
 import admin.bot.adminmoviebot.bot.constants.Buttons;
 import admin.bot.adminmoviebot.bot.constants.Messages;
 import admin.bot.adminmoviebot.bot.messengers.category.CategoryMsgSender;
 import admin.bot.adminmoviebot.bot.messengers.menu.MenuMessageSender;
 import admin.bot.adminmoviebot.bot.messengers.newMovie.NewMovieMsgSender;
+import admin.bot.adminmoviebot.bot.messengers.send.message.users.SendMessageUsers;
 import admin.bot.adminmoviebot.bot.messengers.util.TaskUtil;
 import admin.bot.adminmoviebot.dbConfig.entity.Movie;
 import admin.bot.adminmoviebot.dbConfig.service.movie.service.MovieService;
@@ -28,16 +27,18 @@ public class MessageHandler {
   private final NewMovieMsgSender newMovieMsgSender;
   private final CategoryMsgSender categoryMsgSender;
   private final UsersBotComponent usersBotComponent;
+  private final SendMessageUsers sendMessageUsers;
 
   public MessageHandler(MovieService movieService, UserService userService,
                         MenuMessageSender menuMessageSender, NewMovieMsgSender newMovieMsgSender,
-                        CategoryMsgSender categoryMsgSender, UsersBotComponent usersBotComponent) {
+                        CategoryMsgSender categoryMsgSender, UsersBotComponent usersBotComponent, SendMessageUsers sendMessageUsers) {
     this.movieService = movieService;
     this.userService = userService;
     this.menuMessageSender = menuMessageSender;
     this.newMovieMsgSender = newMovieMsgSender;
     this.categoryMsgSender = categoryMsgSender;
     this.usersBotComponent = usersBotComponent;
+    this.sendMessageUsers = sendMessageUsers;
   }
 
   @SneakyThrows
@@ -74,6 +75,7 @@ public class MessageHandler {
       case ST_ENTER_NEW_CATEGORY_NAME:
         userService.changeUsersStateByUpdate(update, ST_NEW_CATEGORY);
         categoryMsgSender.saveCategoryName(update);
+        mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
         mainAdminComponent.execute(TaskUtil.messageSender(update, Messages.MSG_SAVED_MOVIE));
         mainAdminComponent.execute(categoryMsgSender.sendAllCategoriesList(update));
         break;
@@ -81,13 +83,17 @@ public class MessageHandler {
         if (update.getMessage().hasPhoto()) {
           InputFile inputFile = mainAdminComponent.downloadPhoto(update);
           usersBotComponent.sendPhotoFormatMessage(update, inputFile);
+          mainAdminComponent.execute(TaskUtil.messageSender(update, Messages.MSG_MESSAGE_SENT));
         } else if (update.getMessage().hasVideo()) {
           InputFile inputFile = mainAdminComponent.downloadPhoto(update);
           usersBotComponent.sendVideoFormatMessage(update, inputFile);
+          mainAdminComponent.execute(TaskUtil.messageSender(update, Messages.MSG_MESSAGE_SENT));
         } else {
-          usersBotComponent.sendTextFormatMessage(update.getMessage().getText());
+          if (!update.getMessage().getText().equals(Buttons.BTN_BACK)) {
+            usersBotComponent.sendTextFormatMessage(update.getMessage().getText());
+            mainAdminComponent.execute(TaskUtil.messageSender(update, Messages.MSG_MESSAGE_SENT));
+          }
         }
-        mainAdminComponent.execute(TaskUtil.messageSender(update, Messages.MSG_MESSAGE_SENT));
         userService.changeUsersStateByUpdate(update, ST_MENU);
         mainAdminComponent.execute(menuMessageSender.sendMenu(update));
         break;
@@ -112,7 +118,7 @@ public class MessageHandler {
         break;
       case Buttons.BTN_SEND_MSG_USERS:
         userService.changeUsersStateByUpdate(update, ST_SEND_MESSAGE_USERS);
-        mainAdminComponent.execute(TaskUtil.messageSender(update, MSG_ENTER_WANTED_MESSAGE));
+        mainAdminComponent.execute(sendMessageUsers.sendTextFormatMessage(update));
         break;
       case Buttons.BTN_ADD_NEW_CATEGORY:
         userService.changeUsersStateByUpdate(update, ST_NEW_CATEGORY);
@@ -122,4 +128,5 @@ public class MessageHandler {
         break;
     }
   }
+
 }

@@ -25,4 +25,5 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
   @Query("SELECT m FROM Movie m JOIN m.posts p WHERE p.originalMovie = true")
   List<Movie> findAllWithOriginalMovies();
 
+  List<Movie> findByCategoryId(Long category_id);
 }

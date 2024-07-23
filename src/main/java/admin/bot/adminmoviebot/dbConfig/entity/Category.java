@@ -14,4 +14,5 @@ public class Category extends AbstractEntity {
 
   private String name;
 
+  private String langCode;
 }

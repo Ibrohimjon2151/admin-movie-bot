@@ -19,7 +19,6 @@ public class ChannelMessageHandler {
 
   public void handlerMessage(Update update, MainAdminComponent mainAdminComponent) throws TelegramApiException {
     if (channelMessengers.checkMessageShareable(update)) {
-
       for (ForwardMessage forwardMessageToAdmin : channelMessengers.forwardMessageToAdmins(update)) {
         mainAdminComponent.execute(forwardMessageToAdmin);
       }

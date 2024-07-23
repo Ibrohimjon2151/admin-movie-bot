@@ -1,6 +1,5 @@
 package admin.bot.adminmoviebot.bot.components;
 
-import admin.bot.adminmoviebot.bot.MessageHandler;
 import admin.bot.adminmoviebot.bot.config.BotConfigComponent;
 import admin.bot.adminmoviebot.bot.messengers.channel.ChannelMessengers;
 import admin.bot.adminmoviebot.bot.messengers.menu.MenuMessageSender;

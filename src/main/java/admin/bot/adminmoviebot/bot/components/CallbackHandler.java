@@ -11,8 +11,10 @@ import admin.bot.adminmoviebot.bot.messengers.util.TaskUtil;
 import admin.bot.adminmoviebot.dbConfig.service.user.service.UserService;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import static admin.bot.adminmoviebot.bot.constants.BotState.*;
@@ -89,6 +91,10 @@ public class CallbackHandler {
       case ST_CONNECT_ORIGINAL_MOVIE:
         handleConnectOriginalMovie(data, update, mainAdminComponent);
         break;
+      case ST_ENTER_NEW_CATEGORY_LANG:
+        mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
+        mainAdminComponent.execute(categoryMsgSender.saveCategoryLangSendName(update));
+        break;
       default:
         break;
     }
@@ -99,6 +105,7 @@ public class CallbackHandler {
       case Buttons.DATA_YES_MESSAGE:
         mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
         channelMessengers.connectMovieAndPost();
+        mainAdminComponent.execute(TaskUtil.messageSender(update, Messages.MSG_CONNECTED_SUCCESSFULLY));
         break;
       case Buttons.DATA_NO_MESSAGE:
         for (DeleteMessage deleteMessagesAllAdmin : menuMessageSender.deleteMessagesAllAdmins(update)) {
@@ -139,11 +146,10 @@ public class CallbackHandler {
       case Buttons.DATA_YES_MESSAGE:
         mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
         usersBotComponent.forwardMessageToUsers(channelMessengers.forwardSelectedMessageToUsers());
+        mainAdminComponent.execute(TaskUtil.messageSender(update,Messages.MSG_MESSAGE_SENT));
         break;
       case Buttons.DATA_NO_MESSAGE:
-        for (DeleteMessage deleteMessagesAllAdmin : menuMessageSender.deleteMessagesAllAdmins(update)) {
-          mainAdminComponent.execute(deleteMessagesAllAdmin);
-        }
+        mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
         break;
     }
     for (Long l : userService.getAdminsUserId()) {
@@ -157,15 +163,15 @@ public class CallbackHandler {
       case Buttons.DATA_YES_MESSAGE:
         mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
         channelMessengers.connectMovieAndPost();
+        mainAdminComponent.execute(TaskUtil.messageSender(update, Messages.MSG_CONNECTED_SUCCESSFULLY));
         break;
       case Buttons.DATA_NO_MESSAGE:
-        for (DeleteMessage deleteMessagesAllAdmin : menuMessageSender.deleteMessagesAllAdmins(update)) {
-          mainAdminComponent.execute(deleteMessagesAllAdmin);
-        }
+        mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
         break;
       case Buttons.BTN_FORWARD_BOT_USERS:
         mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
         usersBotComponent.forwardMessageToUsers(channelMessengers.forwardSelectedMessageToUsers());
+        mainAdminComponent.execute(TaskUtil.messageSender(update,Messages.MSG_MESSAGE_SENT));
         break;
     }
     for (Long l : userService.getAdminsUserId()) {

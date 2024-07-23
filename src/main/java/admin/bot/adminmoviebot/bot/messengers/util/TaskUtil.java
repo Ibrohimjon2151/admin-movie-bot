@@ -4,6 +4,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -92,5 +93,15 @@ public class TaskUtil {
 
     inlineKeyboardMarkup.setKeyboard(keyboardRows);
     return inlineKeyboardMarkup;
+  }
+
+  public static SendMessage removeKeyboardButtons(Update update){
+    SendMessage sendMessage = new SendMessage();
+    sendMessage.setChatId(String.valueOf(getChatId(update)));
+    ReplyKeyboardRemove remove = new ReplyKeyboardRemove();
+    remove.setRemoveKeyboard(true);
+    sendMessage.setReplyMarkup(remove);
+    sendMessage.setText("   ");
+    return sendMessage;
   }
 }

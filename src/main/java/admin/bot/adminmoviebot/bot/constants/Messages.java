@@ -8,7 +8,8 @@ public interface Messages {
   String MSG_ID_FOR_NEW_MOVE = "Kino uchun yangi unique bo'lgan kino code: ";
   String MSG_MOVIE_NAME = "Kino nomini jo'nating";
   String MSG_CHOOSE_MOVIE_CATEGORY = "Kino janrini tanlang";
-  String MSG_CHOOSE_LANG = "Kino tilini tanlang";
+  String MSG_CHOOSE_LANG_MOVIE = "Kino tilini tanlang";
+  String MSG_CHOOSE_LANG_CATEGORY = "Janr tilini tanlang";
   String MSG_CHOOSE_QUALITY = "Kino sifatini tanlang";
   String MSG_ENTER_LENGTH_MOVIE = "Kino davomiyligik vaqtini kiriting";
   String MSG_ENTER_SIZE = "Kino hajmini kiriting";
@@ -28,4 +29,5 @@ public interface Messages {
   String MSG_CONNECT_TRAILER = " kodli kino malumotlarini trailer bilan bog'laysizmi";
   String MSG_RESTRICT_ADD_MOVIE = " kodli Kino malumotlariga trailer va kino biriktirilmadi, avval biriktiring";
   String MSG_CONNECT_ORIGINAL_MOVIE = " kodli Kino malumotlariga ushbu kinoni biriktirasizmi";
+  String MSG_CONNECTED_SUCCESSFULLY = "Kino muvaffaqiyatli ulandi";
 }

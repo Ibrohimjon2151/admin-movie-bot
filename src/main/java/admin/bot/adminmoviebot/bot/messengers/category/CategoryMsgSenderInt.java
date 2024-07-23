@@ -11,7 +11,9 @@ public sealed interface CategoryMsgSenderInt permits CategoryMsgSender {
 
   SendMessage deleteOrAddCategory(Update update);
 
-  SendMessage addNewCategory(Update update);
+  SendMessage saveCategoryLangSendName(Update update);
 
   void saveCategoryName(Update update);
+
+  SendMessage chooseLanguageCode(Update update);
 }
