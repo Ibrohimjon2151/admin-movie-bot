@@ -37,7 +37,9 @@ public sealed interface NewMovieMsgSenderInt permits NewMovieMsgSender{
 
   SendMessage movieFunctions(Update update);
   
-  SendMessage getAllMovieCategories(Update update);
+  SendMessage drawAllMovieCategories(Update update);
 
  List<SendMessage> drawMovieByCategory(Update update);
+
+  DeleteMessage deleteOrRouteTrailer(Update update);
 }

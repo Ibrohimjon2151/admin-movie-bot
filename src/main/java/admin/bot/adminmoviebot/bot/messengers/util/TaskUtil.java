@@ -37,10 +37,13 @@ public class TaskUtil {
   // MAKE KeyboardButton AUTOMATICALLY
   public static ReplyKeyboardMarkup createTwoColumnKeyboard(String[] buttonNames) {
     ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+    replyKeyboardMarkup.setSelective(true);
     replyKeyboardMarkup.setResizeKeyboard(true);
-    replyKeyboardMarkup.setOneTimeKeyboard(false);
-    replyKeyboardMarkup.setSelective(false);
+    replyKeyboardMarkup.setOneTimeKeyboard(true);
 
+    KeyboardButton keyboardButton = new KeyboardButton();
+    keyboardButton.setRequestContact(true);
+    keyboardButton.setText("< Kontakt jo'natish \uD83D\uDCDE >");
 
     List<KeyboardRow> keyboardRows = new ArrayList<>();
     KeyboardRow row = new KeyboardRow();

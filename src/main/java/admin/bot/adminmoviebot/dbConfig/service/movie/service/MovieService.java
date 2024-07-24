@@ -119,4 +119,20 @@ public final class MovieService implements MovieServiceInt {
     List<Movie> byCategoryId = movieRepository.findByCategoryId(categoryId);
     return byCategoryId;
   }
+
+  @Override
+  public String getTrailersUrl(Movie movie) {
+    String url = null;
+    for (Post post : movie.getPosts()) {
+      if (!post.isOriginalMovie()) {
+        url = STR."https://t.me/\{post.getChannelUrl()}/\{post.getMessageId()}";
+      }
+    }
+    return url;
+  }
+
+  @Override
+  public void deleteMovie(String id) {
+    movieRepository.deleteById(Long.valueOf(id));
+  }
 }

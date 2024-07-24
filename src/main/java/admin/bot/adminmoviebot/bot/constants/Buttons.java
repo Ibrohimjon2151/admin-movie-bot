@@ -36,6 +36,8 @@ public interface Buttons {
   String BTN_MINUS = "➖";
   String BTN_BACK = "Ortga🔙";
   String BTN_FORWARD_BOT_USERS = "Bot userlariga jo'natish\uD83D\uDD04";
+  String BTN_DELETE = "\uD83D\uDDD1";
+  String BTN_ROUTE_TRAILER = "Trailer➡\uFE0F";
 
 
   // INLINE BUTTONS' DATA MESSAGE

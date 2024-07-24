@@ -31,4 +31,8 @@ public sealed interface MovieServiceInt permits MovieService {
   void connectMovieAndPost(Movie moviePostIsNull, Post lastPost);
 
  List<Movie> getMoviesByCategoryId(Long categoryId);
+
+  String getTrailersUrl(Movie movie);
+
+  void deleteMovie(String id);
 }

@@ -46,6 +46,7 @@ public class CallbackHandler {
   public void handleCallback(Update update, MainAdminComponent mainAdminComponent) {
     Long chatId = TaskUtil.getChatId(update);
     BotState userState = userService.getUsersStateByChatId(chatId);
+    BotState previousState = userService.getUserPreviousState(chatId);
     String data = update.getCallbackQuery().getData();
 
     switch (userState) {
@@ -100,9 +101,22 @@ public class CallbackHandler {
         break;
       case ST_MOVIE_CATEGORY_TO_GET_LIST:
         List<SendMessage> allMoviesByCategory = newMovieMsgSender.drawMovieByCategory(update);
+        for (SendMessage sendMessage : allMoviesByCategory) {
+          mainAdminComponent.execute(sendMessage);
+        }
+        break;
+      case ST_MOVIES_LIST_OPENED:
+        mainAdminComponent.execute((newMovieMsgSender.deleteOrRouteTrailer(update)));
         break;
       default:
         break;
+    }
+    if (previousState.equals(BotState.ST_DELETE_OR_ROUTE)){
+      List<SendMessage> allMoviesByCategory = newMovieMsgSender.drawMovieByCategory(update);
+      for (SendMessage sendMessage : allMoviesByCategory) {
+        mainAdminComponent.execute(sendMessage);
+      }
+      userService.changeUsersPreviousStateByChatId(update,null);
     }
   }
 
@@ -152,7 +166,7 @@ public class CallbackHandler {
       case Buttons.DATA_YES_MESSAGE:
         mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
         usersBotComponent.forwardMessageToUsers(channelMessengers.forwardSelectedMessageToUsers());
-        mainAdminComponent.execute(TaskUtil.messageSender(update,Messages.MSG_MESSAGE_SENT));
+        mainAdminComponent.execute(TaskUtil.messageSender(update, Messages.MSG_MESSAGE_SENT));
         break;
       case Buttons.DATA_NO_MESSAGE:
         mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
@@ -177,7 +191,7 @@ public class CallbackHandler {
       case Buttons.BTN_FORWARD_BOT_USERS:
         mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
         usersBotComponent.forwardMessageToUsers(channelMessengers.forwardSelectedMessageToUsers());
-        mainAdminComponent.execute(TaskUtil.messageSender(update,Messages.MSG_MESSAGE_SENT));
+        mainAdminComponent.execute(TaskUtil.messageSender(update, Messages.MSG_MESSAGE_SENT));
         break;
     }
     for (Long l : userService.getAdminsUserId()) {

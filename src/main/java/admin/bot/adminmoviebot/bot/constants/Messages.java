@@ -5,7 +5,7 @@ public interface Messages {
 
   String MSG_START = "/start";
   String MSG_MENU = "Menyu\uD83D\uDC47";
-  String MSG_CHOOSE_DOWN = "\uD83D\uDC47";
+  String MSG_CHOOSE_DOWN = "\uD83D\uDC47\uD83D\uDC47";
   String MSG_ID_FOR_NEW_MOVE = "Kino uchun yangi unique bo'lgan kino code: ";
   String MSG_MOVIE_NAME = "Kino nomini jo'nating";
   String MSG_CHOOSE_MOVIE_CATEGORY = "Kino janrini tanlang";
@@ -31,4 +31,5 @@ public interface Messages {
   String MSG_RESTRICT_ADD_MOVIE = " kodli Kino malumotlariga trailer va kino biriktirilmadi, avval biriktiring";
   String MSG_CONNECT_ORIGINAL_MOVIE = " kodli Kino malumotlariga ushbu kinoni biriktirasizmi";
   String MSG_CONNECTED_SUCCESSFULLY = "Kino muvaffaqiyatli ulandi";
+  String MSG_MOVIE_NOT_FOUND = "Tanlangan Janr bo'yicha kino topilmadi";
 }
