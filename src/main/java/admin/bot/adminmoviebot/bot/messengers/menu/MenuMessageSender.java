@@ -40,7 +40,7 @@ public final class MenuMessageSender implements MenuMessageSenderInt {
   }
   sendMessage.setChatId(TaskUtil.getChatIdStr(update));
 
-  String[] menus = {BTN_ANALYSE, BTN_SEND_MSG_USERS, BTN_ADD_NEW_MOVIE, BTN_ADD_NEW_CATEGORY};
+  String[] menus = {BTN_ANALYSE, BTN_SEND_MSG_USERS, BTN_MOVIES, BTN_ADD_NEW_CATEGORY};
   ReplyKeyboardMarkup keyboardMarkup = TaskUtil.createTwoColumnKeyboard(menus);
   sendMessage.setReplyMarkup(keyboardMarkup);
 

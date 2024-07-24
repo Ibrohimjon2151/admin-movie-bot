@@ -3,6 +3,8 @@ package admin.bot.adminmoviebot.dbConfig.service.movie.service;
 import admin.bot.adminmoviebot.dbConfig.entity.Movie;
 import admin.bot.adminmoviebot.dbConfig.entity.Post;
 
+import java.util.List;
+
 public sealed interface MovieServiceInt permits MovieService {
   String generateUniqueCode();
 
@@ -28,4 +30,5 @@ public sealed interface MovieServiceInt permits MovieService {
 
   void connectMovieAndPost(Movie moviePostIsNull, Post lastPost);
 
+ List<Movie> getMoviesByCategoryId(Long categoryId);
 }

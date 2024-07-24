@@ -7,6 +7,8 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
 
 public sealed interface NewMovieMsgSenderInt permits NewMovieMsgSender{
   SendMessage sendGeneratedMovieId(Update update);
@@ -30,4 +32,12 @@ public sealed interface NewMovieMsgSenderInt permits NewMovieMsgSender{
   EditMessageText sendEditParameters(Update update);
 
   SendMessage editExactParameter(Update update);
+
+ SendMessage sendMovieDetails(Update update, String message);
+
+  SendMessage movieFunctions(Update update);
+  
+  SendMessage getAllMovieCategories(Update update);
+
+ List<SendMessage> drawMovieByCategory(Update update);
 }

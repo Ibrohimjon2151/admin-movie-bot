@@ -37,4 +37,17 @@ public class CategoryService {
     List<Movie> byCategoryId = movieRepository.findByCategoryId(id);
     return !byCategoryId.isEmpty();
   }
+
+  public String[] getAllCategoriesName() {
+    String[] array = getAll().stream().map(Category::getName)
+     .toArray(String[]::new);
+    return array;
+  }
+
+  public String[] getAllCategoriesIds() {
+    String[] ids = getAll().stream()
+     .map(category -> String.valueOf(category.getId()))
+     .toArray(String[]::new);
+    return ids;
+  }
 }

@@ -17,6 +17,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static admin.bot.adminmoviebot.bot.constants.BotState.*;
 
 @Component
@@ -94,6 +97,9 @@ public class CallbackHandler {
       case ST_ENTER_NEW_CATEGORY_LANG:
         mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
         mainAdminComponent.execute(categoryMsgSender.saveCategoryLangSendName(update));
+        break;
+      case ST_MOVIE_CATEGORY_TO_GET_LIST:
+        List<SendMessage> allMoviesByCategory = newMovieMsgSender.drawMovieByCategory(update);
         break;
       default:
         break;

@@ -114,5 +114,9 @@ public final class MovieService implements MovieServiceInt {
     movieRepository.save(moviePostIsNull);
   }
 
-
+  @Override
+  public List<Movie> getMoviesByCategoryId(Long categoryId) {
+    List<Movie> byCategoryId = movieRepository.findByCategoryId(categoryId);
+    return byCategoryId;
+  }
 }

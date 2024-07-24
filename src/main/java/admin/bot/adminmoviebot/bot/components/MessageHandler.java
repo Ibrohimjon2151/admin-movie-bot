@@ -97,6 +97,12 @@ public class MessageHandler {
         userService.changeUsersStateByUpdate(update, ST_MENU);
         mainAdminComponent.execute(menuMessageSender.sendMenu(update));
         break;
+      case ST_MOVIE_OPTIONS:
+        mainAdminComponent.execute(newMovieMsgSender.movieFunctions(update));
+        break;
+      case ST_MOVIE_CODE:
+        mainAdminComponent.execute(newMovieMsgSender.sendGeneratedMovieId(update));
+        break;
       default:
         break;
     }
@@ -105,16 +111,8 @@ public class MessageHandler {
   @SneakyThrows
   private void handleMenuState(String message, Update update, MainAdminComponent mainAdminComponent) {
     switch (message) {
-      case Buttons.BTN_ADD_NEW_MOVIE:
-        if (movieService.getMoviePostIsNull() != null) {
-          Movie moviePostIsNull = movieService.getMoviePostIsNull();
-          mainAdminComponent.execute(TaskUtil.messageSender(update, moviePostIsNull.getMovieCode() + Messages.MSG_RESTRICT_ADD_MOVIE));
-          userService.changeUsersStateByUpdate(update, ST_MENU);
-          mainAdminComponent.execute(menuMessageSender.sendMenu(update));
-        } else {
-          mainAdminComponent.execute(newMovieMsgSender.sendGeneratedMovieId(update));
-          userService.changeUsersStateByUpdate(update, ST_MOVIE_CODE);
-        }
+      case Buttons.BTN_MOVIES:
+        mainAdminComponent.execute(newMovieMsgSender.sendMovieDetails(update,null));
         break;
       case Buttons.BTN_SEND_MSG_USERS:
         userService.changeUsersStateByUpdate(update, ST_SEND_MESSAGE_USERS);
