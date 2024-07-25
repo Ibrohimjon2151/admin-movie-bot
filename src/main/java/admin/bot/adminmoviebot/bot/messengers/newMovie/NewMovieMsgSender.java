@@ -91,7 +91,7 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
     editMessageText.setReplyMarkup(replyKeyboardRemove);
 
     // SET USER'S PREVIOUS STATE
-    userService.changeUsersPreviousStateByChatId(update, ST_SAVE_NAME_FIRST);
+    userService.setUsersPreviousStateByChatId(update, ST_SAVE_NAME_FIRST);
     return editMessageText;
   }
 
@@ -106,7 +106,7 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
       movieService.saveMovieName(currentMovieCode, name);
     }
 
-    userService.changeUsersPreviousStateByChatId(update, ST_SAVE_CATEGORY_FIRST);
+    userService.setUsersPreviousStateByChatId(update, ST_SAVE_CATEGORY_FIRST);
 
     return editMessageText;
   }
@@ -137,7 +137,7 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
       movieService.saveMovieCategoryId(currentMovieCode, data);
     }
     // SET USER'S PREVIOUS STATE
-    userService.changeUsersPreviousStateByChatId(update, ST_SAVE_LANG_FIRST);
+    userService.setUsersPreviousStateByChatId(update, ST_SAVE_LANG_FIRST);
 
     return editMessageText;
   }
@@ -161,7 +161,7 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
       movieService.saveMovieLanguage(currentMovieCode, update.getCallbackQuery().getData());
     }
     // SET USER'S PREVIOUS STATE
-    userService.changeUsersPreviousStateByChatId(update, ST_SAVE_QUALITY_FIRST);
+    userService.setUsersPreviousStateByChatId(update, ST_SAVE_QUALITY_FIRST);
 
     return editMessageText;
   }
@@ -178,7 +178,7 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
       movieService.saveMovieQuality(currentMovieCode, update.getCallbackQuery().getData());
     }
     // SET USER'S PREVIOUS STATE
-    userService.changeUsersPreviousStateByChatId(update, ST_SAVE_RUNTIME_FIRST);
+    userService.setUsersPreviousStateByChatId(update, ST_SAVE_RUNTIME_FIRST);
     return sendMessage;
   }
 
@@ -197,7 +197,7 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
     }
 
     // SET USER'S PREVIOUS STATE
-    userService.changeUsersPreviousStateByChatId(update, ST_SAVE_SIZE_FIRST);
+    userService.setUsersPreviousStateByChatId(update, ST_SAVE_SIZE_FIRST);
     return sendMessage;
   }
 
@@ -212,7 +212,7 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
     if (userService.getUserPreviousState(TaskUtil.getChatId(update)).equals(ST_SAVE_SIZE_FIRST)) {
       movieService.saveMovieSize(currentMovieCode, update.getMessage().getText());
     }
-    userService.changeUsersPreviousStateByChatId(update, ST_SAVE_YEAR_FIRST);
+    userService.setUsersPreviousStateByChatId(update, ST_SAVE_YEAR_FIRST);
     return sendMessage;
   }
 
@@ -320,36 +320,36 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
   public SendMessage editExactParameter(Update update) {
     SendMessage sendMessage = new SendMessage();
     String data = update.getCallbackQuery().getData();
-    userService.changeUsersStateByUpdate(update, ST_MOVIE_CONFIRM);
+    userService.setUsersStateByUpdate(update, ST_MOVIE_CONFIRM);
 
     switch (data) {
       case Buttons.BTN_MOVIE_NAME -> {
         sendMessage = copyCodeSendName(update);
-        userService.changeUsersPreviousStateByChatId(update, ST_SAVE_NAME_EDIT);
+        userService.setUsersPreviousStateByChatId(update, ST_SAVE_NAME_EDIT);
       }
       case Buttons.BTN_MOVIE_GENRE -> {
         sendMessage = saveNameChooseCategory(update);
-        userService.changeUsersPreviousStateByChatId(update, ST_SAVE_CATEGORY_EDIT);
+        userService.setUsersPreviousStateByChatId(update, ST_SAVE_CATEGORY_EDIT);
       }
       case Buttons.BTN_MOVIE_LANG -> {
         sendMessage = saveCategoryChooseLang(update);
-        userService.changeUsersPreviousStateByChatId(update, ST_SAVE_LANG_EDIT);
+        userService.setUsersPreviousStateByChatId(update, ST_SAVE_LANG_EDIT);
       }
       case Buttons.BTN_MOVIE_QUALITY -> {
         sendMessage = saveLangChooseQuality(update);
-        userService.changeUsersPreviousStateByChatId(update, ST_SAVE_QUALITY_EDIT);
+        userService.setUsersPreviousStateByChatId(update, ST_SAVE_QUALITY_EDIT);
       }
       case Buttons.BTN_MOVIE_YEAR -> {
         sendMessage = saveSizeSendProductionYear(update);
-        userService.changeUsersPreviousStateByChatId(update, ST_SAVE_YEAR_EDIT);
+        userService.setUsersPreviousStateByChatId(update, ST_SAVE_YEAR_EDIT);
       }
       case Buttons.BTN_MOVIE_SIZE -> {
         sendMessage = saveMovieRunTimeSendSize(update);
-        userService.changeUsersPreviousStateByChatId(update, ST_SAVE_SIZE_EDIT);
+        userService.setUsersPreviousStateByChatId(update, ST_SAVE_SIZE_EDIT);
       }
       case Buttons.BTN_MOVIE_DURATION -> {
         sendMessage = saveQualitySendRunTime(update);
-        userService.changeUsersPreviousStateByChatId(update, ST_SAVE_DURATION_EDIT);
+        userService.setUsersPreviousStateByChatId(update, ST_SAVE_DURATION_EDIT);
       }
     }
     return sendMessage;
@@ -363,7 +363,7 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
     String[] parameters = {Buttons.BTN_ADD_NEW_MOVIE, Buttons.BTN_MOVIE_LIST, Buttons.BTN_BACK};
     ReplyKeyboardMarkup twoColumnKeyboard = TaskUtil.createTwoColumnKeyboard(parameters);
     sendMessage.setReplyMarkup(twoColumnKeyboard);
-    userService.changeUsersStateByUpdate(update, ST_MOVIE_OPTIONS);
+    userService.setUsersStateByUpdate(update, ST_MOVIE_OPTIONS);
     return sendMessage;
   }
 
@@ -375,11 +375,11 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
       case Buttons.BTN_ADD_NEW_MOVIE -> {
         if (movieService.getMoviePostIsNull() != null) {
           Movie moviePostIsNull = movieService.getMoviePostIsNull();
-          userService.changeUsersStateByUpdate(update, ST_MOVIE_OPTIONS);
+          userService.setUsersStateByUpdate(update, ST_MOVIE_OPTIONS);
           sendMessage = sendMovieDetails(update, moviePostIsNull.getMovieCode() + Messages.MSG_RESTRICT_ADD_MOVIE);
         } else {
           sendMessage = sendGeneratedMovieId(update);
-          userService.changeUsersStateByUpdate(update, ST_MOVIE_CODE);
+          userService.setUsersStateByUpdate(update, ST_MOVIE_CODE);
         }
       }
       case Buttons.BTN_MOVIE_LIST -> {
@@ -387,7 +387,7 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
       }
       case Buttons.BTN_BACK -> {
         sendMessage = menuMessageSender.sendMenu(update);
-        userService.changeUsersStateByUpdate(update, ST_MENU);
+        userService.setUsersStateByUpdate(update, ST_MENU);
       }
     }
     return sendMessage;
@@ -405,7 +405,7 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
     row.add(button);
     keyboard.add(row);
     sendMessage.setReplyMarkup(inlineKeyboardMarkup);
-    userService.changeUsersStateByUpdate(update, ST_MOVIE_CATEGORY_TO_GET_LIST);
+    userService.setUsersStateByUpdate(update, ST_MOVIE_CATEGORY_TO_GET_LIST);
     return sendMessage;
   }
 
@@ -452,17 +452,17 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
           moviesSendMessage.setReplyMarkup(twoColumnInlineKeyboard);
 
           sendMessages.add(moviesSendMessage);
-          userService.changeUsersStateByUpdate(update, ST_MOVIES_LIST_OPENED);
-          userService.changeUsersPreviousStateByChatId(update,ST_DELETE_OR_ROUTE);
+          userService.setUsersStateByUpdate(update, ST_MOVIE_CATEGORY_TO_GET_LIST);
+          userService.setUsersPreviousStateByChatId(update,ST_DELETE_OR_ROUTE);
         });
-        sendMessage = getCategoriesList(update);
+        sendMessage = drawAllMovieCategories(update);
         sendMessages.add(sendMessage);
       } else {
         SendMessage message = TaskUtil.messageSender(update, Messages.MSG_MOVIE_NOT_FOUND);
         sendMessages.add(message);
         sendMessage = drawAllMovieCategories(update);
         sendMessages.add(sendMessage);
-        userService.changeUsersStateByUpdate(update, ST_MOVIE_CATEGORY_TO_GET_LIST);
+        userService.setUsersStateByUpdate(update, ST_MOVIE_CATEGORY_TO_GET_LIST);
       }
     }
     return sendMessages;

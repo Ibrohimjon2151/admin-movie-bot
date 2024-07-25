@@ -38,6 +38,9 @@ public interface Buttons {
   String BTN_FORWARD_BOT_USERS = "Bot userlariga jo'natish\uD83D\uDD04";
   String BTN_DELETE = "\uD83D\uDDD1";
   String BTN_ROUTE_TRAILER = "Trailer➡\uFE0F";
+  String BTN_READ_COMMENTS = "Commentariyalarni o'qish\uD83D\uDCAC";
+  String BTN_DOWNLOAD_DETAILS = "Xisobot\uD83D\uDCC3";
+  String BTN_REPLY_COMMENT = "Javob yozish\uD83D\uDD04";
 
 
   // INLINE BUTTONS' DATA MESSAGE

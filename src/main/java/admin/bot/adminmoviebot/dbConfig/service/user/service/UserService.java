@@ -38,7 +38,7 @@ public class UserService {
   }
 
   // CHANGE USR STATE BY UPDATE
-  public void changeUsersStateByChatId(Long chatId, BotState newState) {
+  public void setUsersStateByChatId(Long chatId, BotState newState) {
     Optional<User> byChatId = userRepository.findByChatId(chatId);
     User user = byChatId.get();
     user.setBotState(newState);
@@ -48,7 +48,7 @@ public class UserService {
 
 
   // CHANGE USR STATE
-  public void changeUsersStateByUpdate(Update update, BotState newState) {
+  public void setUsersStateByUpdate(Update update, BotState newState) {
     User user = getUser(update);
     user.setAdmin(true);
     user.setBotState(newState);
@@ -56,7 +56,7 @@ public class UserService {
   }
 
   // CHANGE PREVIOUS STATE
-  public void changeUsersPreviousStateByChatId(Update update, BotState newState) {
+  public void setUsersPreviousStateByChatId(Update update, BotState newState) {
     User user = getUser(update);
     user.setPreviousState(newState);
     userRepository.save(user);

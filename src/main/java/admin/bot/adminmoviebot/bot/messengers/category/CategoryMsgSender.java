@@ -99,9 +99,9 @@ public final class CategoryMsgSender implements CategoryMsgSenderInt {
     if (Buttons.BTN_PLUS.equals(data)) {
       sendMessage = chooseLanguageCode(update);
 //      sendMessage = saveCategoryLangSendName(update);
-      userService.changeUsersStateByUpdate(update, BotState.ST_ENTER_NEW_CATEGORY_LANG);
+      userService.setUsersStateByUpdate(update, BotState.ST_ENTER_NEW_CATEGORY_LANG);
     } else if (Buttons.BTN_BACK.equals(data)) {
-      userService.changeUsersStateByUpdate(update, ST_MENU);
+      userService.setUsersStateByUpdate(update, ST_MENU);
       sendMessage = menuMessageSender.sendMenu(update);
     } else {
       if (isConvertibleToLong(data)) {
@@ -120,7 +120,7 @@ public final class CategoryMsgSender implements CategoryMsgSenderInt {
     sendMessage.setChatId(TaskUtil.getChatIdStr(update));
     sendMessage.setText(Messages.MSG_ENTER_CATEGORY_NAME);
     category.setLangCode(update.getCallbackQuery().getData());
-    userService.changeUsersStateByUpdate(update, ST_ENTER_NEW_CATEGORY_NAME);
+    userService.setUsersStateByUpdate(update, ST_ENTER_NEW_CATEGORY_NAME);
     return sendMessage;
   }
 
@@ -144,7 +144,7 @@ public final class CategoryMsgSender implements CategoryMsgSenderInt {
   public SendMessage chooseLanguageCode(Update update) {
     SendMessage sendMessage = getLanguagesList(update, Messages.MSG_CHOOSE_LANG_CATEGORY);
     // SET USER'S STATE
-    userService.changeUsersStateByUpdate(update, ST_SAVE_LANG_CATEGORY);
+    userService.setUsersStateByUpdate(update, ST_SAVE_LANG_CATEGORY);
     return sendMessage;
   }
 

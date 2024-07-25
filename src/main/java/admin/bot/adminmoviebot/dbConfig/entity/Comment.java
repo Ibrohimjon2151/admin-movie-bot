@@ -5,7 +5,6 @@ import admin.bot.adminmoviebot.dbConfig.entity.user.bot.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
-
 @Entity
 @Getter
 @Setter
@@ -13,8 +12,14 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Comment extends AbstractEntity {
-  String comment;
+
+  private String commentMessage;
 
   @ManyToOne
-  User user;
+  private User commenter;
+
+  private Integer messageId;
+
+
 }
+

@@ -76,7 +76,7 @@ public final class ChannelMessengers implements ChannelMessengersInt {
           InlineKeyboardMarkup twoColumnInlineKeyboard = TaskUtil.createTwoColumnInlineKeyboard(buttons, buttonsData);
           sendMessage.setReplyMarkup(twoColumnInlineKeyboard);
 
-          userService.changeUsersStateByChatId(l, BotState.ST_CONNECT_TRAILER);
+          userService.setUsersStateByChatId(l, BotState.ST_CONNECT_TRAILER);
 
           post.setOriginalMovie(false);
         } else if (userName == null) {
@@ -88,7 +88,7 @@ public final class ChannelMessengers implements ChannelMessengersInt {
           InlineKeyboardMarkup twoColumnInlineKeyboard = TaskUtil.createTwoColumnInlineKeyboard(buttons, buttonsData);
           sendMessage.setReplyMarkup(twoColumnInlineKeyboard);
 
-          userService.changeUsersStateByChatId(l, BotState.ST_CONNECT_ORIGINAL_MOVIE);
+          userService.setUsersStateByChatId(l, BotState.ST_CONNECT_ORIGINAL_MOVIE);
           post.setOriginalMovie(true);
         } else {
           sendApproveToForwardMessage(userName, post, l, sendMessage);
@@ -109,7 +109,7 @@ public final class ChannelMessengers implements ChannelMessengersInt {
 
     InlineKeyboardMarkup twoColumnInlineKeyboard = TaskUtil.createTwoColumnInlineKeyboard(buttons, buttonsData);
     sendMessage.setReplyMarkup(twoColumnInlineKeyboard);
-    userService.changeUsersStateByChatId(l, BotState.ST_DO_FORWARD);
+    userService.setUsersStateByChatId(l, BotState.ST_DO_FORWARD);
     if (userName != null) {
       post.setOriginalMovie(false);
     }

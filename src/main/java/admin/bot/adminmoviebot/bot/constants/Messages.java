@@ -32,4 +32,8 @@ public interface Messages {
   String MSG_CONNECT_ORIGINAL_MOVIE = " kodli Kino malumotlariga ushbu kinoni biriktirasizmi";
   String MSG_CONNECTED_SUCCESSFULLY = "Kino muvaffaqiyatli ulandi";
   String MSG_MOVIE_NOT_FOUND = "Tanlangan Janr bo'yicha kino topilmadi";
+  String MSG_CHOOSE_ONE_OF_THEM = "Quydagilarni birini tanlang\uD83D\uDC47";
+  String MSG_LEAVE_MESSAGE_HERE = "Xabar qoldirishingiz mumkin\uD83D\uDC47";
+
+  String MSG_NOT_RECEIVED_COMMENTS = "So'ngi 10 kun ichida commentlar yo'q";
 }

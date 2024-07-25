@@ -3,6 +3,7 @@ package admin.bot.adminmoviebot.bot.components;
 import admin.bot.adminmoviebot.bot.constants.BotState;
 import admin.bot.adminmoviebot.bot.constants.Buttons;
 import admin.bot.adminmoviebot.bot.constants.Messages;
+import admin.bot.adminmoviebot.bot.messengers.analyse.BotAnalyseService;
 import admin.bot.adminmoviebot.bot.messengers.category.CategoryMsgSender;
 import admin.bot.adminmoviebot.bot.messengers.channel.ChannelMessengers;
 import admin.bot.adminmoviebot.bot.messengers.menu.MenuMessageSender;
@@ -30,16 +31,18 @@ public class CallbackHandler {
   private final CategoryMsgSender categoryMsgSender;
   private final ChannelMessengers channelMessengers;
   private final UsersBotComponent usersBotComponent;
+  private final BotAnalyseService botAnalyseService;
 
   public CallbackHandler(UserService userService, MenuMessageSender menuMessageSender,
                          NewMovieMsgSender newMovieMsgSender, CategoryMsgSender categoryMsgSender,
-                         ChannelMessengers channelMessengers, UsersBotComponent usersBotComponent) {
+                         ChannelMessengers channelMessengers, UsersBotComponent usersBotComponent, BotAnalyseService botAnalyseService) {
     this.userService = userService;
     this.menuMessageSender = menuMessageSender;
     this.newMovieMsgSender = newMovieMsgSender;
     this.categoryMsgSender = categoryMsgSender;
     this.channelMessengers = channelMessengers;
     this.usersBotComponent = usersBotComponent;
+    this.botAnalyseService = botAnalyseService;
   }
 
   @SneakyThrows
@@ -51,22 +54,22 @@ public class CallbackHandler {
 
     switch (userState) {
       case ST_MOVIE_CODE:
-        userService.changeUsersStateByUpdate(update, ST_ENTER_MOVIE_NAME);
+        userService.setUsersStateByUpdate(update, ST_ENTER_MOVIE_NAME);
         mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
         mainAdminComponent.execute(newMovieMsgSender.copyCodeSendName(update));
         break;
       case ST_CHOOSE_LANGUAGE:
-        userService.changeUsersStateByUpdate(update, ST_MOVIE_QUALITY);
+        userService.setUsersStateByUpdate(update, ST_MOVIE_QUALITY);
         mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
         mainAdminComponent.execute(newMovieMsgSender.saveCategoryChooseLang(update));
         break;
       case ST_MOVIE_QUALITY:
-        userService.changeUsersStateByUpdate(update, ST_MOVIE_RUNTIME);
+        userService.setUsersStateByUpdate(update, ST_MOVIE_RUNTIME);
         mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
         mainAdminComponent.execute(newMovieMsgSender.saveLangChooseQuality(update));
         break;
       case ST_MOVIE_RUNTIME:
-        userService.changeUsersStateByUpdate(update, ST_MOVIE_SIZE);
+        userService.setUsersStateByUpdate(update, ST_MOVIE_SIZE);
         mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
         mainAdminComponent.execute(newMovieMsgSender.saveQualitySendRunTime(update));
         break;
@@ -74,7 +77,7 @@ public class CallbackHandler {
         handleReviewAddedMovie(data, update, mainAdminComponent);
         break;
       case ST_MOVIE_CONFIRM:
-        userService.changeUsersStateByUpdate(update, ST_REVIEW_ADDED_MOVIE);
+        userService.setUsersStateByUpdate(update, ST_REVIEW_ADDED_MOVIE);
         mainAdminComponent.execute(TaskUtil.messageSender(update, Messages.MSG_CONFIRM_DETAILS_MOVIE));
         mainAdminComponent.execute(newMovieMsgSender.saveMovieYearSendConfirmation(update));
         break;
@@ -105,18 +108,18 @@ public class CallbackHandler {
           mainAdminComponent.execute(sendMessage);
         }
         break;
-      case ST_MOVIES_LIST_OPENED:
-        mainAdminComponent.execute((newMovieMsgSender.deleteOrRouteTrailer(update)));
+      case ST_ANALYSE_OPTIONS:
+        mainAdminComponent.execute(botAnalyseService.responseUsersComment(update));
+        userService.setUsersStateByUpdate(update,BotState.ST_RESPONSE_COMMENT);
         break;
       default:
         break;
     }
-    if (previousState.equals(BotState.ST_DELETE_OR_ROUTE)){
-      List<SendMessage> allMoviesByCategory = newMovieMsgSender.drawMovieByCategory(update);
-      for (SendMessage sendMessage : allMoviesByCategory) {
-        mainAdminComponent.execute(sendMessage);
+    if (previousState.equals(ST_DELETE_OR_ROUTE) && userState.equals(ST_MOVIE_CATEGORY_TO_GET_LIST)) {
+      DeleteMessage deleteMessage = newMovieMsgSender.deleteOrRouteTrailer(update);
+      if (deleteMessage.getChatId() != null) {
+        mainAdminComponent.execute(deleteMessage);
       }
-      userService.changeUsersPreviousStateByChatId(update,null);
     }
   }
 
@@ -145,16 +148,16 @@ public class CallbackHandler {
         mainAdminComponent.execute(TaskUtil.messageSender(update, Messages.MSG_SAVED_MOVIE));
         mainAdminComponent.execute(TaskUtil.messageSender(update, Messages.MSG_UPLOAD_MOVIE_TO_CONNECT));
         mainAdminComponent.execute(menuMessageSender.sendMenu(update));
-        userService.changeUsersStateByUpdate(update, ST_MENU);
+        userService.setUsersStateByUpdate(update, ST_MENU);
         break;
       case Buttons.BTN_NO:
         mainAdminComponent.execute(menuMessageSender.deleteMessage(update));
         mainAdminComponent.execute(TaskUtil.messageSender(update, Messages.MSG_MOVIE_DETAILS_DELETED));
         mainAdminComponent.execute(menuMessageSender.sendMenu(update));
-        userService.changeUsersStateByUpdate(update, ST_MENU);
+        userService.setUsersStateByUpdate(update, ST_MENU);
         break;
       case Buttons.BTN_EDIT:
-        userService.changeUsersStateByUpdate(update, ST_EDIT_MOVIE);
+        userService.setUsersStateByUpdate(update, ST_EDIT_MOVIE);
         mainAdminComponent.execute(newMovieMsgSender.sendEditParameters(update));
         break;
     }
@@ -173,7 +176,7 @@ public class CallbackHandler {
         break;
     }
     for (Long l : userService.getAdminsUserId()) {
-      userService.changeUsersStateByChatId(l, ST_MENU);
+      userService.setUsersStateByChatId(l, ST_MENU);
     }
   }
 
@@ -195,7 +198,7 @@ public class CallbackHandler {
         break;
     }
     for (Long l : userService.getAdminsUserId()) {
-      userService.changeUsersStateByChatId(l, ST_MENU);
+      userService.setUsersStateByChatId(l, ST_MENU);
     }
   }
 }

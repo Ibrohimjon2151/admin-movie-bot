@@ -1,5 +1,6 @@
 package admin.bot.adminmoviebot.bot.messengers.util;
 
+import admin.bot.adminmoviebot.bot.constants.Buttons;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -98,13 +99,9 @@ public class TaskUtil {
     return inlineKeyboardMarkup;
   }
 
-  public static SendMessage removeKeyboardButtons(Update update){
-    SendMessage sendMessage = new SendMessage();
-    sendMessage.setChatId(String.valueOf(getChatId(update)));
-    ReplyKeyboardRemove remove = new ReplyKeyboardRemove();
-    remove.setRemoveKeyboard(true);
-    sendMessage.setReplyMarkup(remove);
-    sendMessage.setText("   ");
-    return sendMessage;
+  public static ReplyKeyboardMarkup makeBackButton() {
+    String [] button = {Buttons.BTN_BACK};
+    ReplyKeyboardMarkup keyboardMarkup = createTwoColumnKeyboard(button);
+    return keyboardMarkup;
   }
 }

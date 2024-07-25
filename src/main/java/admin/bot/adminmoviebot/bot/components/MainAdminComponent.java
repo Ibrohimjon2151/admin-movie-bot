@@ -64,7 +64,7 @@ public class MainAdminComponent extends TelegramLongPollingBot {
     } else if (update.hasMessage()) {
       if (update.getMessage().hasText() && update.getMessage().getText().equals(MSG_START)) {
         execute(menuMessageSender.sendMenu(update));
-        userService.changeUsersStateByUpdate(update, ST_MENU);
+        userService.setUsersStateByUpdate(update, ST_MENU);
       } else {
         messageHandler.handleMessage(update, this);
       }
