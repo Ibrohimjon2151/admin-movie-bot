@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
- @Query("SELECT p FROM Post p WHERE p.originalMovie = false ORDER BY p.lastUpdatedDate DESC limit 1")
+ @Query("SELECT p FROM Post p  ORDER BY p.lastUpdatedDate DESC limit 1")
  Post getLastUpdated();
 }

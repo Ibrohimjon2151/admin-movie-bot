@@ -13,6 +13,8 @@ import admin.bot.adminmoviebot.dbConfig.repository.PostRepository;
 import admin.bot.adminmoviebot.dbConfig.service.movie.service.MovieService;
 import admin.bot.adminmoviebot.dbConfig.service.post.service.PostService;
 import admin.bot.adminmoviebot.dbConfig.service.user.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.ForwardMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -26,6 +28,7 @@ import java.util.List;
 @Service
 public final class ChannelMessengers implements ChannelMessengersInt {
 
+  private static final Logger log = LoggerFactory.getLogger(ChannelMessengers.class);
   private final ChannelConfigComponent channelConfigComponent;
   private final MovieRepository movieRepository;
   private final PostRepository postRepository;
@@ -80,16 +83,22 @@ public final class ChannelMessengers implements ChannelMessengersInt {
 
           post.setOriginalMovie(false);
         } else if (userName == null) {
-          sendMessage.setChatId(String.valueOf(l));
-          sendMessage.setText(STR."<b>\{moviePostIsNull.getMovieCode()}</b>\{Messages.MSG_CONNECT_ORIGINAL_MOVIE}");
-          String[] buttons = {Buttons.BTN_YES, Buttons.BTN_NO};
-          String[] buttonsData = {Buttons.DATA_YES_MESSAGE, Buttons.DATA_NO_MESSAGE};
+          if (update.getChannelPost().hasVideo()) {
+            sendMessage.setChatId(String.valueOf(l));
+            sendMessage.setText(STR."<b>\{moviePostIsNull.getMovieCode()}</b>\{Messages.MSG_CONNECT_ORIGINAL_MOVIE}");
+            String[] buttons = {Buttons.BTN_YES, Buttons.BTN_NO};
+            String[] buttonsData = {Buttons.DATA_YES_MESSAGE, Buttons.DATA_NO_MESSAGE};
 
-          InlineKeyboardMarkup twoColumnInlineKeyboard = TaskUtil.createTwoColumnInlineKeyboard(buttons, buttonsData);
-          sendMessage.setReplyMarkup(twoColumnInlineKeyboard);
+            InlineKeyboardMarkup twoColumnInlineKeyboard = TaskUtil.createTwoColumnInlineKeyboard(buttons, buttonsData);
+            sendMessage.setReplyMarkup(twoColumnInlineKeyboard);
 
-          userService.setUsersStateByChatId(l, BotState.ST_CONNECT_ORIGINAL_MOVIE);
-          post.setOriginalMovie(true);
+            userService.setUsersStateByChatId(l, BotState.ST_CONNECT_ORIGINAL_MOVIE);
+
+            String fileId = update.getChannelPost().getVideo().getFileId();
+            post.setFileId(fileId);
+
+            post.setOriginalMovie(true);
+          }
         } else {
           sendApproveToForwardMessage(userName, post, l, sendMessage);
         }
@@ -123,15 +132,16 @@ public final class ChannelMessengers implements ChannelMessengersInt {
     List<Long> adminsUserId = userService.getAdminsUserId();
     Message message = update.getChannelPost();
 
-    for (Long l : adminsUserId) {
-      ForwardMessage forwardMessage = new ForwardMessage();
 
-      forwardMessage.setFromChatId(String.valueOf(message.getChatId()));
-      forwardMessage.setChatId(String.valueOf(l));
-      forwardMessage.setMessageId(message.getMessageId());
+      for (Long l : adminsUserId) {
+        ForwardMessage forwardMessage = new ForwardMessage();
 
-      forwardMessages.add(forwardMessage);
-    }
+        forwardMessage.setFromChatId(String.valueOf(message.getChatId()));
+        forwardMessage.setChatId(String.valueOf(l));
+        forwardMessage.setMessageId(message.getMessageId());
+
+        forwardMessages.add(forwardMessage);
+      }
 
     return forwardMessages;
   }

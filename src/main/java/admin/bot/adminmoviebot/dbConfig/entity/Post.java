@@ -20,4 +20,6 @@ public class Post extends AbstractEntity {
 
   // IS THIS POST ORIGINAL MOVIE
   private boolean originalMovie;
+
+  private String fileId;
 }

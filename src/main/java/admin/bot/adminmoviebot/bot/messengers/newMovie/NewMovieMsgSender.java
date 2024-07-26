@@ -62,8 +62,7 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
     sendMessage.enableHtml(true);
     String[] copyButton = {Buttons.BTN_COPY_CODE};
     String[] codeData = {code};
-    //START TO SAVE MOVIE
-    movieService.saveMovieCode(code);
+
 
     userService.saveMovieCode(update, code);
     currentMovieCode = userService.getUsersMovieCode(update);
@@ -75,6 +74,7 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
   //SAVE MOVIE AND ADD MOVIE TO DATABASE
   @Override
   public SendMessage copyCodeSendName(Update update) {
+    currentMovieCode = userService.getUsersMovieCode(update);
     SendMessage editMessageText = new SendMessage();
     editMessageText.setChatId(TaskUtil.getChatIdStr(update));
     editMessageText.setText(Messages.MSG_MOVIE_NAME);
@@ -90,6 +90,8 @@ public final class NewMovieMsgSender implements NewMovieMsgSenderInt {
     replyKeyboardRemove.setSelective(false);
     editMessageText.setReplyMarkup(replyKeyboardRemove);
 
+    //START TO SAVE MOVIE
+    movieService.saveMovieCode(code);
     // SET USER'S PREVIOUS STATE
     userService.setUsersPreviousStateByChatId(update, ST_SAVE_NAME_FIRST);
     return editMessageText;
