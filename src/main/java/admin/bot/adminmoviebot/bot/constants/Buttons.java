@@ -41,7 +41,11 @@ public interface Buttons {
   String BTN_READ_COMMENTS = "Commentariyalarni o'qish\uD83D\uDCAC";
   String BTN_DOWNLOAD_DETAILS = "Xisobot\uD83D\uDCC3";
   String BTN_REPLY_COMMENT = "Javob yozish\uD83D\uDD04";
+  String BTN_CHANGE_ADMIN_DETAILS = "Admin malumotlarini o'zgartirish\uD83D\uDCDD";
 
+  String BTN_ADMIN_FULL_NAME = "Ism";
+  String BTN_ADMIN_USERNAME = "Username";
+  String BTN_PHONE_NUMBER = "Tel.raqam";
 
   // INLINE BUTTONS' DATA MESSAGE
   String DATA_YES_MESSAGE = "PERMIT_FORWARD";

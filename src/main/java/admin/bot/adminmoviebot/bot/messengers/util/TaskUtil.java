@@ -42,10 +42,6 @@ public class TaskUtil {
     replyKeyboardMarkup.setResizeKeyboard(true);
     replyKeyboardMarkup.setOneTimeKeyboard(true);
 
-    KeyboardButton keyboardButton = new KeyboardButton();
-    keyboardButton.setRequestContact(true);
-    keyboardButton.setText("< Kontakt jo'natish \uD83D\uDCDE >");
-
     List<KeyboardRow> keyboardRows = new ArrayList<>();
     KeyboardRow row = new KeyboardRow();
 

@@ -1,7 +1,10 @@
 package admin.bot.adminmoviebot.dbConfig.component;
 
+import admin.bot.adminmoviebot.bot.constants.LanguageCode;
 import admin.bot.adminmoviebot.dbConfig.entity.Category;
 import admin.bot.adminmoviebot.dbConfig.entity.Movie;
+import admin.bot.adminmoviebot.dbConfig.entity.user.bot.AdminDetails;
+import admin.bot.adminmoviebot.dbConfig.repository.AdminDetailsRepository;
 import admin.bot.adminmoviebot.dbConfig.repository.CategoryRepository;
 import admin.bot.adminmoviebot.dbConfig.repository.MovieRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -14,10 +17,12 @@ import java.util.List;
 public class DataLoader implements CommandLineRunner {
   private final CategoryRepository categoryRepository;
   private final MovieRepository movieRepository;
+  private final AdminDetailsRepository adminDetailsRepository;
 
-  public DataLoader(CategoryRepository categoryRepository, MovieRepository movieRepository) {
+  public DataLoader(CategoryRepository categoryRepository, MovieRepository movieRepository, AdminDetailsRepository adminDetailsRepository) {
     this.categoryRepository = categoryRepository;
     this.movieRepository = movieRepository;
+   this.adminDetailsRepository = adminDetailsRepository;
   }
 
   @Override
@@ -42,5 +47,14 @@ public class DataLoader implements CommandLineRunner {
       movie.setRunTime("1212");
       movieRepository.save(movie);
     }
+    if (adminDetailsRepository.count() == 0) {
+      AdminDetails adminDetails = new AdminDetails();
+      adminDetails.setId(LanguageCode.CNS_ADMIN_ID);
+      adminDetails.setFullName("Ibrokhimjon Yursunov");
+      adminDetails.setPhoneNumber("+998911082151");
+      adminDetails.setTgUserName("Ibrohimjon_Yursunov");
+      adminDetailsRepository.save(adminDetails);
+    }
+
   }
 }

@@ -1,8 +1,10 @@
 package admin.bot.adminmoviebot.dbConfig.entity;
 
-import admin.bot.adminmoviebot.bot.constants.Language;
 import admin.bot.adminmoviebot.dbConfig.entity.template.AbstractEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.*;
 
 import java.util.List;
@@ -35,4 +37,6 @@ public class Movie extends AbstractEntity {
 
   @OneToMany
   private List<Post> posts;
+
+  private int likeCount;
 }
