@@ -115,13 +115,13 @@ public class UserService {
  public List<LanguageCountDto> languageCountDto(Date begin, Date end) {
   List<Object[]> results = userRepository.findUsersCountBetweenTwoDates(begin, end);
   List<LanguageCountDto> dtos = results.stream()
-   .map(row -> new LanguageCountDto((Integer) row[0], (Long )row[1]))
+   .map(row -> new LanguageCountDto((int) row[0], (long)row[1]))
    .collect(Collectors.toList());
   return dtos;
  }
 
  // GET ALL USERS COUNT UNTIL THE DATE
- public Integer getUsersCount(Date endDate) {
+ public int getUsersCount(Date endDate) {
   return userRepository.getUsersCountUntilDate(endDate);
  }
 
@@ -134,5 +134,8 @@ public class UserService {
   return dtos;
  }
 
+ public int getUsersCountBetweenDates(Date beginDate, Date endDate) {
+  return userRepository.getUsersCountBetweenDates(beginDate,endDate);
+ }
 }
 

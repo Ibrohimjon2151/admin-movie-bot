@@ -118,7 +118,7 @@ public class MessageHandler {
     Object object = botAnalyseService.responseBotAnalyseOptions(update);
     if (object instanceof SendMessage) {
      mainAdminComponent.execute((SendMessage) object);
-    }if (object instanceof SendDocument){
+    }else if (object instanceof SendDocument){
     mainAdminComponent.execute(TaskUtil.messageSender(update,Messages.MSG_IT_MAY_TAKE_LONGER));
     mainAdminComponent.execute((SendDocument) object);
     mainAdminComponent.execute(botAnalyseService.sendAnalyseDetailButton(update));

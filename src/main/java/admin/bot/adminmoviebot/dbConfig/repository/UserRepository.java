@@ -14,25 +14,24 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
- Optional<User> findByChatId(Long chatId);
+  Optional<User> findByChatId(Long chatId);
 
- @Query("SELECT u.chatId FROM users u where u.admin = true ")
- List<Long> findAllChatIds();
+  @Query("SELECT u.chatId FROM users u where u.admin = true ")
+  List<Long> findAllChatIds();
 
- @Query("select t.creationDate from users t where t.creationDate = (select min(a.creationDate) from users a )")
- Date findCreationDate();
-
-
- @Query("SELECT u.lang, count(*) FROM users u where u.creationDate between :begin and :end group by u.lang")
- List<Object[]>  findUsersCountBetweenTwoDates(Date begin, Date end);
-
- @Query("SELECT count(*) FROM users u where u.creationDate <= :endDate ")
- Integer getUsersCountUntilDate(Date endDate);
-
- @Query("SELECT u.lang, count(*) FROM users u where u.creationDate <= :endDate  group by u.lang")
- List<Object[]>  getUsersCountLangCountUntilDate(Date endDate);
+  @Query("select t.creationDate from users t where t.creationDate = (select min(a.creationDate) from users a )")
+  Date findCreationDate();
 
 
+  @Query("SELECT u.lang, count(*) FROM users u where u.creationDate between :begin and :end group by u.lang")
+  List<Object[]> findUsersCountBetweenTwoDates(Date begin, Date end);
 
+  @Query("SELECT count(*) FROM users u where u.creationDate <= :endDate ")
+  int getUsersCountUntilDate(Date endDate);
 
+  @Query("SELECT u.lang, count(*) FROM users u where u.creationDate <= :endDate  group by u.lang")
+  List<Object[]> getUsersCountLangCountUntilDate(Date endDate);
+
+  @Query("SELECT count(*) FROM users u where u.creationDate between :beginDate and :endDate")
+  int getUsersCountBetweenDates(Date beginDate, Date endDate);
 }

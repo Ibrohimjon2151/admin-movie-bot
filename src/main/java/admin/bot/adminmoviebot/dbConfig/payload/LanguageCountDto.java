@@ -11,5 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class LanguageCountDto {
  private int langCode; // 0-uzb, 1-eng, 2-ru
- private Long count;
+ private long count;
 }

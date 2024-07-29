@@ -77,6 +77,7 @@ public final class BotAnalyseService implements BotAnalyseServiceInt {
       case Buttons.BTN_BACK -> {
         sendMessage = menuMessageSender.sendMenu(update);
         userService.setUsersStateByUpdate(update, BotState.ST_MENU);
+        return sendMessage;
       }
       case Buttons.BTN_DOWNLOAD_DETAILS -> {
         userService.setUsersStateByUpdate(update,ST_ANALYSE_OPTIONS);

@@ -5,19 +5,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserReportData {
- public String beginDate;
- public String endDate;
- public Long newUsers;
- public Long newUsersUz;
- public Long newUsersEng;
- public Long newUsersRu;
- public Long allUsers;
- public Long allUsersUz;
- public Long allUsersEng;
- public Long allUsersRu;
+ public Date beginDate;
+ public Date endDate;
+ public long newUsers;
+ public long newUsersUz;
+ public long newUsersEng;
+ public long newUsersRu;
+ public long allUsers;
+ public long allUsersUz;
+ public long allUsersEng;
+ public long allUsersRu;
 }
